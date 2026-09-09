@@ -32,7 +32,7 @@ src/overlays/ov035/calls/func_ov035_020b355c.c:
     complete
     .text       start:0x020b355c end:0x020b36e0
 
-src/overlays/ov035/asm_stubs/calls/func_ov035_020b36e0.c:
+src/overlays/ov035/calls/func_ov035_020b36e0.c:
     complete
     .text       start:0x020b36e0 end:0x020b37ec
 
