@@ -120,6 +120,10 @@ src/overlays/ov146/calls/func_ov146_020ce514.c:
     complete
     .text       start:0x020ce514 end:0x020ce538
 
+src/overlays/ov146/calls/func_ov146_020ce538.c:
+    complete
+    .text       start:0x020ce538 end:0x020ce564
+
 src/overlays/ov146/calls/func_ov146_020ce608.c:
     complete
     .text       start:0x020ce608 end:0x020ce670
@@ -175,6 +179,10 @@ src/overlays/ov146/calls/func_ov146_020cee30.c:
 src/overlays/ov146/auto/func_ov146_020cf0cc.c:
     complete
     .text       start:0x020cf0cc end:0x020cf134
+
+src/overlays/ov146/calls/func_ov146_020cf134.c:
+    complete
+    .text       start:0x020cf134 end:0x020cf168
 
 src/overlays/ov146/calls/func_ov146_020cf200.c:
     complete

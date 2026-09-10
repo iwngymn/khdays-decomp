@@ -688,6 +688,10 @@ libs/nitro/gx/auto/GX_VBlankIntr.c:
     complete
     .text       start:0x020055fc end:0x02005630
 
+src/auto/func_02005630.c:
+    complete
+    .text       start:0x02005630 end:0x0200566c
+
 src/calls/func_0200566c.c:
     complete
     .text       start:0x0200566c end:0x020056b4
@@ -3848,6 +3852,10 @@ src/calls/func_0202216c.c:
     complete
     .text       start:0x0202216c end:0x0202219e
 
+src/auto/func_020221a0.c:
+    complete
+    .text       start:0x020221a0 end:0x020221de
+
 src/auto/func_020221e0.c:
     complete
     .text       start:0x020221e0 end:0x020221ee
@@ -3927,6 +3935,10 @@ src/calls/func_020224ec.c:
 src/calls/func_02022510.c:
     complete
     .text       start:0x02022510 end:0x02022544
+
+src/calls/func_02022544.c:
+    complete
+    .text       start:0x02022544 end:0x02022578
 
 src/calls/func_02022578.c:
     complete
@@ -4183,6 +4195,10 @@ src/auto/func_02023e80.c:
 src/calls/func_02023eb4.c:
     complete
     .text       start:0x02023eb4 end:0x02023f08
+
+src/auto/func_02023f08.c:
+    complete
+    .text       start:0x02023f08 end:0x02023f58
 
 src/calls/func_02023f58.c:
     complete
@@ -5904,6 +5920,10 @@ src/calls/func_02035924.c:
     complete
     .text       start:0x02035924 end:0x0203595c
 
+src/calls/func_0203595c.c:
+    complete
+    .text       start:0x0203595c end:0x02035978
+
 src/calls/func_02035978.c:
     complete
     .text       start:0x02035978 end:0x020359b4
@@ -5947,6 +5967,14 @@ src/calls/func_02035d30.c:
 src/calls/func_02035d3c.c:
     complete
     .text       start:0x02035d3c end:0x02035d78
+
+src/calls/func_02035d78.c:
+    complete
+    .text       start:0x02035d78 end:0x02035d90
+
+src/calls/func_02035d90.c:
+    complete
+    .text       start:0x02035d90 end:0x02035da8
 
 src/calls/func_02035f84.c:
     complete
