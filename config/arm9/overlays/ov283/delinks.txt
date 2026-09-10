@@ -100,6 +100,10 @@ src/overlays/ov283/calls/func_ov283_020ceee8.c:
     complete
     .text       start:0x020ceee8 end:0x020cef04
 
+src/overlays/ov283/calls/func_ov283_020cef04.c:
+    complete
+    .text       start:0x020cef04 end:0x020cef38
+
 src/overlays/ov283/auto/func_ov283_020cef38.c:
     complete
     .text       start:0x020cef38 end:0x020cef4c

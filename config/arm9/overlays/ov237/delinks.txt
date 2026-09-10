@@ -36,6 +36,10 @@ src/overlays/ov237/auto/func_ov237_020cd550.c:
     complete
     .text       start:0x020cd550 end:0x020cd554
 
+src/overlays/ov237/calls/func_ov237_020cdb50.c:
+    complete
+    .text       start:0x020cdb50 end:0x020cdbe4
+
 src/overlays/ov237/calls/func_ov237_020ce2ac.c:
     complete
     .text       start:0x020ce2ac end:0x020ce314
@@ -143,6 +147,10 @@ libs/nitro/wm/calls/WM_EndKeySharing_0x020d0ca0.c:
 src/overlays/ov237/calls/func_ov237_020d0cac.c:
     complete
     .text       start:0x020d0cac end:0x020d0cc8
+
+src/overlays/ov237/calls/func_ov237_020d0cc8.c:
+    complete
+    .text       start:0x020d0cc8 end:0x020d0d14
 
 src/overlays/ov237/calls/func_ov237_020d0d14.c:
     complete
