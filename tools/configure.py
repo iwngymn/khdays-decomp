@@ -89,17 +89,36 @@ def files_from_delinks(delinks_txt: Path):
     return out
 
 
-def stage_delinked_objects(link_dir: Path):
-    """Copy every `.o` from build/delinks/ into build/link/ with a flat name.
+def stage_delinked_objects(link_dir: Path, compiled_names=()):
+    """Copy the `.o` files from build/delinks/ into build/link/ with flat names.
 
     dsd lcf references bare object names (no path), so mwldarm needs to find
     them via -L. Flattening avoids per-file -L flags.
+
+    A delink whose source we compile is NOT staged. Both copies carry the same
+    bare name, both were handed to mwld, and the LCF asks for that bare name --
+    so which one supplied a function came down to input order, and nothing in
+    the build recorded a choice. Every function claimed as decompiled had a
+    same-named object holding the original bytes sitting next to it in the link.
+    Staging only the delinks nothing compiles removes the ambiguity instead of
+    relying on the ordering.
     """
+    compiled_names = set(compiled_names)
+    for stale in compiled_names:
+        f = link_dir / stale
+        if f.exists():
+            f.unlink()
+    skipped = 0
     for src in (BUILD / "delinks").rglob("*.o"):
+        if src.name in compiled_names:
+            skipped += 1
+            continue
         dst = link_dir / src.name
         if dst.exists() and dst.stat().st_mtime >= src.stat().st_mtime:
             continue
         shutil.copyfile(src, dst)
+    if skipped:
+        print(f"[configure] staged delinks, skipped {skipped} superseded by compiled C")
 
 
 def rel(p):
@@ -117,7 +136,7 @@ def source_rule(source):
     raise ValueError(f"unsupported reconstructed source type: {source}")
 
 
-def emit_ninja(ninja_path: Path, src_files):
+def emit_ninja(ninja_path: Path, src_files, modes=None):
     """Write build.ninja with compile + link rules for the prototype scope.
 
     All paths are relative to ROOT so ninja (invoked from ROOT) doesn't have
@@ -130,10 +149,12 @@ def emit_ninja(ninja_path: Path, src_files):
         f"python = {py}",
         "",
         "rule mwcc",
-        # file_modes.json flips a file between ARM and THUMB — recompile when it
-        # changes so an old .o built without -thumb doesn't shadow the correct
-        # THUMB output.
-        "  command = $python tools/_run_mwcc.py $out $in",
+        # $mode carries -thumb for the files that need it. It used to come from
+        # build/file_modes.json, declared as an implicit dep on every compile
+        # edge -- so adding one function rewrote that file and invalidated all
+        # 20,000 objects. On the command line instead, ninja's own hash
+        # rebuilds exactly the file whose mode changed.
+        "  command = $python tools/_run_mwcc.py $out $in $mode",
         "  description = MWCC $in",
         "  restat = 1",
         "",
@@ -151,7 +172,7 @@ def emit_ninja(ninja_path: Path, src_files):
     ]
 
     compiled_objs = []
-    modes_dep = rel(BUILD / "file_modes.json")
+    modes = modes or {}
     compilers_dep = rel(BUILD / "file_compilers.json")
     for src in src_files:
         # Match objdiff.json's expected base_path layout.
@@ -159,12 +180,17 @@ def emit_ninja(ninja_path: Path, src_files):
         obj_path.parent.mkdir(parents=True, exist_ok=True)
         obj = rel(obj_path)
         compiled_objs.append(obj)
-        # Implicit deps on file_modes.json (arm <-> thumb flips) and
-        # file_compilers.json (per-file compiler-version overrides) so either
-        # change invalidates any cached .o for this file.
+        # file_compilers.json stays an implicit dep: it is a handful of
+        # entries and only changes when a translation unit moves to another
+        # compiler version, so invalidating everything is the right answer.
         rule = source_rule(src)
         if rule == "mwcc":
-            lines.append(f"build {obj}: mwcc {src} | {modes_dep} {compilers_dep}")
+            lines.append(f"build {obj}: mwcc {src} | {compilers_dep}")
+            # ALWAYS emit a token. An empty $mode expands to a trailing space,
+            # which CreateProcess and Python's argv parser both drop, so the
+            # script would see argv of length 3 and fall back to the JSON --
+            # silently undoing this for every ARM edge.
+            lines.append("  mode = %s" % modes.get(src.replace("\\", "/"), "arm"))
         else:
             lines.append(f"build {obj}: armasm {src}")
 
@@ -240,6 +266,22 @@ def add_absolute_symbols(lcf_path):
     print("[configure] added %d absolute symbol(s) to the LCF" % len(missing))
 
 
+def write_if_changed(path: Path, text: str) -> bool:
+    """Write only when the content differs; return whether it did.
+
+    build/file_compilers.json is an implicit ninja dep on all ~20,000 compile
+    edges. Ninja calls an edge dirty when an implicit dep is newer than the
+    output, so rewriting this file with identical content on every configure
+    rebuilt the entire tree -- which is most of what taking file_modes.json out
+    of the dep list was supposed to fix.
+    """
+    if path.is_file() and path.read_text(encoding="utf-8") == text:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8", newline=chr(10))
+    return True
+
+
 def run(*cmd, cwd=None):
     # Fallo fantasma (2026-07-18/19): gen_delinks.py sale con rc=1 y stdout Y stderr VACIOS, en
     # un overlay distinto cada vez y sin patron. Lanzado a mano justo despues, el mismo comando
@@ -271,7 +313,7 @@ def main():
     # so the ninja implicit dep resolves.
     src_compilers = ROOT / "config" / "arm9" / "file_compilers.json"
     compilers_text = src_compilers.read_text(encoding="utf-8") if src_compilers.exists() else "{}\n"
-    (BUILD / "file_compilers.json").write_text(compilers_text, encoding="utf-8", newline="\n")
+    write_if_changed(BUILD / "file_compilers.json", compilers_text)
 
     skip_delinks = "--skip-delinks" in sys.argv
     if skip_delinks:
@@ -298,9 +340,8 @@ def main():
         for f in frags:
             if f.exists():
                 all_modes.update(json.loads(f.read_text(encoding="utf-8")))
-        (BUILD / "file_modes.json").write_text(
-            json.dumps(all_modes, indent=2, sort_keys=True),
-            encoding="utf-8", newline=chr(10))
+        write_if_changed(BUILD / "file_modes.json",
+                         json.dumps(all_modes, indent=2, sort_keys=True))
         print(f"[configure] file_modes.json: {len(all_modes)} entries "
               f"from {len(frags)} modules")
 
@@ -312,9 +353,6 @@ def main():
         str(ROOT / "config" / "arm9" / "config.yaml"))
     add_absolute_symbols(BUILD / "arm9.lcf")
 
-    print("[configure] stage delinked .o files into build/link/")
-    stage_delinked_objects(LINK)
-
     src_files = []
     for module_dir in MODULES:
         src_files.extend(files_from_delinks(module_dir / "delinks.txt"))
@@ -323,7 +361,14 @@ def main():
     src_files = sorted(set(src_files))
     print(f"[configure] {len(src_files)} matched source files to compile")
 
-    emit_ninja(ROOT / "build.ninja", src_files)
+    print("[configure] stage delinked .o files into build/link/")
+    stage_delinked_objects(LINK, {Path(s).with_suffix(".o").name for s in src_files})
+
+    modes_now = {}
+    mp = BUILD / "file_modes.json"
+    if mp.is_file():
+        modes_now = json.loads(mp.read_text(encoding="utf-8"))
+    emit_ninja(ROOT / "build.ninja", src_files, modes_now)
     print("[configure] wrote build.ninja")
 
 
