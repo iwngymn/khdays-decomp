@@ -22,15 +22,15 @@ if name in calls:
     c = calls[name]; thumb = " --thumb" if c["mode"] == "thumb" else ""
     print("name:", name); print("mode:", c["mode"]); print("kind: HAS CALLS (reloc-aware)")
     print("disasm:", c["asm"]); print("callees:", c["callees"])
-    print("write_to: E:/KH 3582/decomp/src/calls/%s.c" % name)
-    print('verify_cmd: python "E:/KH 3582/decomp/tools/match.py" "E:/KH 3582/decomp/src/calls/%s.c" --obj "%s" --func %s%s'
+    print("write_to: src/calls/%s.c" % name)
+    print('verify_cmd: python "tools/match.py" "src/calls/%s.c" --obj "%s" --func %s%s'
           % (name, c["delink"].replace("\\", "/"), name, thumb))
 elif name in cands:
     c = cands[name]; thumb = " --thumb" if c["mode"] == "thumb" else ""
     print("name:", name); print("mode:", c["mode"]); print("kind: reloc-free")
     print("disasm:", disasm(c["hex"], c["mode"]))
-    print("write_to: E:/KH 3582/decomp/src/auto/%s.c" % name)
-    print('verify_cmd: python "E:/KH 3582/decomp/tools/match.py" "E:/KH 3582/decomp/src/auto/%s.c" %s%s'
+    print("write_to: src/auto/%s.c" % name)
+    print('verify_cmd: python "tools/match.py" "src/auto/%s.c" %s%s'
           % (name, c["hex"], thumb))
 elif name in index:
     d = index[name]; thumb = " --thumb" if d["mode"] == "thumb" else ""
@@ -44,12 +44,12 @@ elif name in index:
         for off, sym in d["relocs"]:
             print("    +0x%x -> %s" % (off, sym))
         print("callees:", sorted(set(s for _, s in d["relocs"])))
-        print("write_to: E:/KH 3582/decomp/src/calls/%s.c" % name)
-        print('verify_cmd: python "E:/KH 3582/decomp/tools/match.py" "E:/KH 3582/decomp/src/calls/%s.c" --obj "%s" --func %s%s'
+        print("write_to: src/calls/%s.c" % name)
+        print('verify_cmd: python "tools/match.py" "src/calls/%s.c" --obj "%s" --func %s%s'
               % (name, os.path.join(ROOT, "build", "delinks", d["module"] + ".o").replace("\\", "/"), name, thumb))
     else:
-        print("write_to: E:/KH 3582/decomp/src/auto/%s.c" % name)
-        print('verify_cmd: python "E:/KH 3582/decomp/tools/match.py" "E:/KH 3582/decomp/src/auto/%s.c" %s%s'
+        print("write_to: src/auto/%s.c" % name)
+        print('verify_cmd: python "tools/match.py" "src/auto/%s.c" %s%s'
               % (name, d["hex"], thumb))
 else:
     print("desconocida:", name)
