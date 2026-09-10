@@ -82,6 +82,13 @@ for attempt in range(8):
     if r.returncode == 0:
         sys.stdout.write(r.stdout)
         sys.stderr.write(r.stderr)
+        # mwcc orders global data by size over [n-1..1, n], never by source order,
+        # and dsd's lcf can only place a whole object per section, so put the
+        # object's data sections in verified address order before it is linked.
+        # Identity for objects with at most one data symbol per section.
+        sys.path.insert(0, str(ROOT / "tools"))
+        from reorder_data_sections import reorder
+        reorder(out_path)
         sys.exit(0)
     time.sleep(0.25 * (attempt + 1))
 

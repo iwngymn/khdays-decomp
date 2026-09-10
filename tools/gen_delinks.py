@@ -155,6 +155,13 @@ def gen_data_block(unit, root=ROOT):
     here so an edited file drops back out instead of poisoning the link. Ranges are
     merged per section: dsd places one section image at the declared start, so a
     source must own a contiguous run and define its symbols in address order.
+
+    "In address order" is about the compiled object, not the source: mwccarm
+    orders global data by size over [n-1..1, n] of source order, and dsd's lcf
+    names an object once per section (`foo.o(.rodata)`), so listing one range
+    per symbol here changes nothing -- dsd still emits that single line.
+    tools/reorder_data_sections.py, run by _run_mwcc.py after every compile,
+    rewrites the object so its data sections follow the receipt addresses.
     """
     root = Path(root)
     receipts_dir = root / "build" / "data_receipts"
@@ -181,6 +188,13 @@ def gen_data_block(unit, root=ROOT):
     modes = {}
     count = 0
     for source in sorted(by_source):
+        # A file whose .text gen_files_block suppressed must not re-enter the
+        # build through its data receipt: it would still be compiled for the
+        # rodata, and its .o would define the same function symbol that dsd's
+        # gap object already provides from the original bytes -- a
+        # multiply-defined link error (seen on func_ov008_02058df0).
+        if source in KNOWN_MISMATCH:
+            continue
         lines = [f"{source}:", "    complete"]
         for section in sorted({item[0] for item in by_source[source]}):
             spans = sorted((s, e) for sec, s, e in by_source[source] if sec == section)
