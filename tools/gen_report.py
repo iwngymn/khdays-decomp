@@ -183,7 +183,7 @@ def build_report(audited_functions, verified_asm, data_regions=()):
 
 
 def main():
-    audited_functions, _unknown_sources, _shared_overlay_copies = audit_progress.classify_functions()
+    audited_functions, _unknown_sources, _shared_overlay_copies, _link_verified = audit_progress.classify_functions()
     verified_asm = load_verified_matches()
     data_regions = data_progress.load_data_inventory()
     report = build_report(audited_functions, verified_asm, data_regions)

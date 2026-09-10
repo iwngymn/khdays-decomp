@@ -101,9 +101,40 @@ attestation and stop report generation until `python tools/verify_report_asm.py`
 passes byte and relocation verification again. Adding a game entry also requires
 the explicit single-CLZ authorization in `config/arm9/asm_exceptions.json`.
 
-Thus ov002, ov003, and ITCM can report 100% matching while the unchanged C audit reports
-1477/1478, 27/28, and 129/154 real-C functions respectively. `PROGRESS.md`, `README.md`,
-and `build/report_c.json` continue to exclude every ASM source from real C.
+ITCM can report 100% matching while the C audit reports 129/154 real-C functions,
+because the remainder is canonical SDK assembly and not C. ov002 and ov003 now report
+100% in both, following the single-instruction rule below. `PROGRESS.md` and
+`build/report_c.json` continue to exclude every other ASM source from real C.
 The workflow uploads `report_c.json` with `YKGP_progress_audit` for comparison.
 Both reports use the same DATA inventory; their difference remains exclusively
 the treatment of verified non-C code.
+
+## The single-instruction rule
+
+A source file that is C throughout apart from ONE instruction that no C form this
+compiler accepts can emit counts as real C decompilation.
+
+Scope, and it is deliberately narrow: exactly one instruction, the rest of the
+implementation in C, and the instruction must be one the compiler cannot be coaxed
+into producing from any C. Today that is `clz` alone, in
+`src/overlays/ov002/calls/func_ov002_02077560.c` and
+`src/overlays/ov003/calls/func_ov003_0204d74c.c`, both recorded in
+`config/arm9/asm_exceptions.json`. Those two are the only functions holding ov002
+and ov003 short of 100%, and under this rule both modules are complete.
+
+This is not permission for inline assembly generally. A file with a second such
+instruction, or with a hand-written block that C could have produced, is an ASM
+stub and never counts. A whole function written as `asm` is not a decompilation at
+all.
+
+Why the rule exists rather than a per-file exception: the question was previously
+answered both ways by two different counting tools, and the count was corrected
+publicly twice as a result. `tools/audit_progress.py` now derives its verdict from
+`tools/provenance.py`, which reads what the link actually used, so the two agree by
+construction instead of by coincidence.
+
+Recorded 2026-09-10 by the repository owner. An earlier entry in
+`asm_exceptions.json` recorded the opposite, attributed to the owner and dated
+2026-08-30/31; those dates precede their involvement in the project, so that
+attribution is not reliable. The inherited text is preserved in that file rather
+than deleted.

@@ -157,6 +157,36 @@ def sdk_name_map():
     return names
 
 
+def link_verdicts():
+    """Ask tools/provenance.py what the LAST LINK actually used, per function.
+
+    A source file existing and looking like C never proved the build used it: overlays
+    share address space, so the global address->source fallback in classify_functions()
+    could credit a source from one overlay to a function at the same address in another.
+    That mis-credited 13 functions until 2026-09-10. provenance reads build/arm9.elf.xMAP
+    and answers the only question that counts, so it is imported here rather than
+    reimplemented -- a second implementation is how the two counts drifted apart before.
+
+    Returns {} when there is no link to read (a fresh clone, or CI without a build). The
+    caller must then mark the report link-unverified instead of publishing it as fact.
+    """
+    try:
+        import provenance
+        MAP = provenance.load_map()
+        OBJS = provenance.load_objects()
+    except Exception as exc:
+        print(f"provenance unavailable ({exc.__class__.__name__}: {exc})")
+        return {}
+    out = {}
+    for func in provenance.all_names():
+        try:
+            verdict = provenance.verdict(func, MAP, OBJS)
+        except KeyError:
+            continue                      # data table under auto/, not a function
+        out[func] = verdict[0] if isinstance(verdict, tuple) else verdict
+    return out
+
+
 def classify_functions():
     index = load_function_index()
     sdk_names = sdk_name_map()
@@ -201,6 +231,27 @@ def classify_functions():
             "sdk_name": sdk_names.get(name) or sdk_names_by_addr.get(addr),
         })
 
+    verdicts = link_verdicts()
+    if verdicts:
+        for func in functions:
+            if func["category"] not in ("c_decompiled_matched", "asm_stub_matched"):
+                continue
+            verdict = verdicts.get(func["name"])
+            if verdict == "C":
+                # Counts as C even when the source carries one authorized inline
+                # instruction no C can express (the single-CLZ exceptions): the link
+                # took the bytes from that .c, which is what the number claims.
+                func["category"] = "c_decompiled_matched"
+            elif verdict is None or verdict != "C":
+                # The link did not take this function's bytes from this source.
+                func["category"] = ("asm_stub_matched"
+                                    if func["category"] == "asm_stub_matched"
+                                    else "named_only")
+                if func["category"] == "named_only":
+                    func["link_unused_source"] = func["source"]
+                    func["source"] = None
+    functions_link_verified = bool(verdicts)
+
     mapped_paths = {f["source"] for f in functions if f["source"]}
     known_addrs_by_unit = defaultdict(set)
     for name, info in index.items():
@@ -231,10 +282,10 @@ def classify_functions():
                 continue
         unknown_sources.append(source)
 
-    return functions, unknown_sources, shared_overlay_copies
+    return functions, unknown_sources, shared_overlay_copies, functions_link_verified
 
 
-def summarize(functions, unknown_sources, shared_overlay_copies):
+def summarize(functions, unknown_sources, shared_overlay_copies, link_verified):
     counts = Counter(f["category"] for f in functions)
     sizes = Counter()
     units = defaultdict(Counter)
@@ -254,6 +305,7 @@ def summarize(functions, unknown_sources, shared_overlay_copies):
         "unknown_source_files": len(unknown_sources),
         "shared_overlay_copies": len(shared_overlay_copies),
         "units": {unit: dict(counter) for unit, counter in sorted(units.items())},
+        "link_verified": link_verified,
     }
 
 
@@ -300,8 +352,8 @@ def write_markdown(summary):
 
 
 def main():
-    functions, unknown_sources, shared_overlay_copies = classify_functions()
-    summary = summarize(functions, unknown_sources, shared_overlay_copies)
+    functions, unknown_sources, shared_overlay_copies, link_verified = classify_functions()
+    summary = summarize(functions, unknown_sources, shared_overlay_copies, link_verified)
     report = {
         "summary": summary,
         "functions": functions,

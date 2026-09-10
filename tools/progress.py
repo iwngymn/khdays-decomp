@@ -80,7 +80,7 @@ def compute_byte_progress():
 
 
 def main():
-    functions, _unknown_sources, _shared_overlay_copies = audit_progress.classify_functions()
+    functions, _unknown_sources, _shared_overlay_copies, _link_verified = audit_progress.classify_functions()
     stats = defaultdict(Counter)
 
     for func in functions:

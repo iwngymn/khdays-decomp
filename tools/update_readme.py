@@ -36,7 +36,7 @@ def update_policy_descriptions(text):
 
 
 def main():
-    functions, _unknown, _shared = audit_progress.classify_functions()
+    functions, _unknown, _shared, _link_verified = audit_progress.classify_functions()
     cats = Counter(f["category"] for f in functions)
     total = sum(cats.values())
     c = cats["c_decompiled_matched"]
