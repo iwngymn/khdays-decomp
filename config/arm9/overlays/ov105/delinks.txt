@@ -131,6 +131,10 @@ src/overlays/ov105/calls/func_ov105_020bef44.c:
     complete
     .text       start:0x020bef44 end:0x020bef74
 
+src/overlays/ov105/calls/func_ov105_020bef74.c:
+    complete
+    .text       start:0x020bef74 end:0x020befa8
+
 src/overlays/ov105/calls/func_ov105_020befe0.c:
     complete
     .text       start:0x020befe0 end:0x020bf008

@@ -276,6 +276,10 @@ src/overlays/ov107/calls/func_ov107_020ca900.c:
     complete
     .text       start:0x020ca900 end:0x020ca918
 
+src/overlays/ov107/auto/func_ov107_020caf24.c:
+    complete
+    .text       start:0x020caf24 end:0x020caf64
+
 src/overlays/ov107/auto/func_ov107_020cafb4.c:
     complete
     .text       start:0x020cafb4 end:0x020cafd8

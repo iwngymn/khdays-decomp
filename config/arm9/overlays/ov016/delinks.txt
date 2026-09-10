@@ -63,6 +63,10 @@ src/overlays/ov016/auto/func_ov016_02080198.c:
     complete
     .text       start:0x02080198 end:0x020801a0
 
+src/overlays/ov016/calls/func_ov016_02080440.c:
+    complete
+    .text       start:0x02080440 end:0x02080480
+
 src/overlays/ov016/calls/func_ov016_0208076c.c:
     complete
     .text       start:0x0208076c end:0x02080780
