@@ -33,6 +33,7 @@
 # ── Toolchain — each contributor provides their own (see CONTRIBUTING.md) ─────
 /tools/mwccarm/
 /tools/dsd.exe
+/tools/wibo
 /tools/ds-decomp-src/
 /tools/_cw/
 *.exe
