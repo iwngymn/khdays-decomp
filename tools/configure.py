@@ -9,6 +9,9 @@ Prototype scope: build ov000 (only module with a populated delinks.txt) using
 Regenerate delinks.txt for ov000, run `dsd delink` + `dsd lcf`, and finally
 emit build.ninja.
 """
+import concurrent.futures as cf
+import json
+import os
 import re
 import shutil
 import subprocess
@@ -65,6 +68,16 @@ def discover_modules():
 
 
 MODULES = discover_modules()
+
+
+def unit_of(module_dir):
+    """config/arm9 -> main, config/arm9/itcm -> itcm, .../overlays/ov006 -> ov006.
+
+    Must agree with the same function in gen_delinks.py: it names the modes
+    fragment each module writes.
+    """
+    rel = module_dir.relative_to(ROOT / "config" / "arm9")
+    return "main" if rel == Path(".") else rel.parts[-1]
 
 
 def files_from_delinks(delinks_txt: Path):
@@ -264,10 +277,32 @@ def main():
     if skip_delinks:
         print("[configure] preserving existing delinks.txt files (--skip-delinks)")
     else:
-        for module_dir in MODULES:
-            rel = module_dir.relative_to(ROOT)
-            print(f"[configure] regen delinks.txt for {rel}")
-            run(sys.executable, str(ROOT / "tools" / "gen_delinks.py"), str(module_dir))
+        # 306 independent processes, each writing only its own module's
+        # delinks.txt and its own modes fragment. This loop was serial and was
+        # most of configure's wall time; nothing about the work required it.
+        gen = str(ROOT / "tools" / "gen_delinks.py")
+        workers = min(len(MODULES), (os.cpu_count() or 4))
+        print(f"[configure] regen delinks.txt for {len(MODULES)} modules "
+              f"({workers} at a time)")
+        with cf.ThreadPoolExecutor(max_workers=workers) as pool:
+            # list() so the first failure propagates instead of being dropped.
+            list(pool.map(lambda d: run(sys.executable, gen, str(d)), MODULES))
+
+    # Merge the per-module modes fragments. Order matters: the old serial code
+    # let a later module overwrite an earlier one's entry, so merge in MODULES
+    # order to keep the same winner.
+    frag_dir = BUILD / "file_modes.d"
+    frags = [frag_dir / (unit_of(m) + ".json") for m in MODULES]
+    if any(f.exists() for f in frags):
+        all_modes = {}
+        for f in frags:
+            if f.exists():
+                all_modes.update(json.loads(f.read_text(encoding="utf-8")))
+        (BUILD / "file_modes.json").write_text(
+            json.dumps(all_modes, indent=2, sort_keys=True),
+            encoding="utf-8", newline=chr(10))
+        print(f"[configure] file_modes.json: {len(all_modes)} entries "
+              f"from {len(frags)} modules")
 
     print("[configure] dsd delink")
     run(str(DSD), "delink", "--config-path",
