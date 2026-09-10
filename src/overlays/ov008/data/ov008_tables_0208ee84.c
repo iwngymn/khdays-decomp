@@ -2,6 +2,17 @@
  *
  * 56 rows of 8 bytes, split at the original symbol boundaries.  The table
  * maps day/progress thresholds to the three mission-summary tier values.
+ *
+ * Why the u8 pieces are wrapped in single-field structs:
+ * mwccarm gives every char array its own .rodata section, and the linker
+ * command file's ALIGNALL(2) starts every section on an even address.  Two of
+ * the symbol boundaries here are odd (0x0208ee89 and 0x0208f021), so as plain
+ * u8 arrays the pieces after them were placed 1-3 bytes late and pushed the
+ * rest of the overlay's .rodata 4 bytes down.  Everything that is not a char
+ * array is pooled into one .rodata section with no padding between 1-byte
+ * aligned items, so the u8 pieces are structs.  Symbol names, sizes, addresses
+ * and bytes are unchanged; the code that reads them keeps declaring them as
+ * `extern u8 name[]`.  A PC port does not need the wrappers.
  */
 
 typedef unsigned char u8;
@@ -15,15 +26,15 @@ const u16 data_ov008_0208ee86[1] = {
     2,
 };
 
-const u8 data_ov008_0208ee88[1] = {
+const struct { u8 bytes[1]; } data_ov008_0208ee88 = {{
     12,
-};
+}};
 
-const u8 data_ov008_0208ee89[1] = {
+const struct { u8 bytes[1]; } data_ov008_0208ee89 = {{
     0,
-};
+}};
 
-const u8 data_ov008_0208ee8a[407] = {
+const struct { u8 bytes[407]; } data_ov008_0208ee8a = {{
     0, 0, 9, 0, 3, 0, 12, 0, 0, 0, 10, 0, 4, 0, 12, 0,
     0, 0, 11, 0, 5, 0, 12, 0, 0, 0, 12, 0, 6, 0, 12, 0,
     0, 0, 13, 0, 7, 0, 12, 0, 0, 0, 14, 0, 8, 0, 12, 0,
@@ -50,10 +61,10 @@ const u8 data_ov008_0208ee8a[407] = {
     0, 0, 66, 1, 57, 0, 5, 4, 3, 0, 96, 1, 59, 0, 12, 0,
     0, 0, 97, 1, 60, 0, 12, 0, 0, 0, 98, 1, 61, 0, 12, 0,
     0, 0, 99, 1, 62, 0, 12,
-};
+}};
 
-const u8 data_ov008_0208f021[35] = {
+const struct { u8 bytes[35]; } data_ov008_0208f021 = {{
     0, 0, 0, 100, 1, 63, 0, 12, 0, 0, 0, 101, 1, 64, 0, 12,
     0, 0, 0, 102, 1, 65, 0, 12, 0, 0, 0, 144, 1, 67, 0, 12,
     0, 0, 0,
-};
+}};

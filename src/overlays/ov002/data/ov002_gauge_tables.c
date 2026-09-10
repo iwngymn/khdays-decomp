@@ -6,6 +6,14 @@
  * the words are packed bytes.
  */
 
+/* mwccarm gives every char array a .rodata/.data section of its own (it handles
+ * them like string literals) while int/short/struct tables pool into one section,
+ * and the ROM interleaves the two, so no single object layout can reproduce it.
+ * Pooling strings folds the char arrays into that one section; the data layout
+ * step (tools/reorder_data_sections.py) then places the whole file. Content is
+ * unchanged; a non-CodeWarrior compiler ignores the pragma. */
+#pragma pool_strings on
+
 typedef unsigned char u8;
 typedef unsigned short u16;
 
