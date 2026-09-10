@@ -207,7 +207,10 @@ def main():
     for op in objects:
         try:
             e = ELFFile(open(op, "rb"))
-        except Exception:
+        except Exception as exc:
+            # An object this pass cannot read is an object whose calls it cannot fix; a
+            # silent skip here surfaces later as an unexplained module mismatch.
+            print("fix_interwork: cannot read %s: %s" % (op, exc), file=sys.stderr)
             continue
         pathmod = module_of_object(op)
         opn = op.replace("\\", "/")
