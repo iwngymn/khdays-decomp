@@ -2707,3 +2707,7 @@ src/overlays/ov022/data/ov022_strings_020b2b6c.c:
 src/overlays/ov022/data/ov022_strings_020b2dc4.c:
     complete
     .data       start:0x020b2dc4 end:0x020b2e60
+
+src/overlays/ov022/data/ov022_tables_020b2520.c:
+    complete
+    .rodata     start:0x020b2520 end:0x020b2538
