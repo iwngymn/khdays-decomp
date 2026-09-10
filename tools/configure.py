@@ -198,6 +198,17 @@ def emit_ninja(ninja_path: Path, src_files):
 ABSOLUTE_SYMBOLS = {
     # The inter-processor lock word at the top of main RAM.
     "data_027ffff0": 0x027FFFF0,
+    # Second names for two ov002 tables. mwccarm deduplicates literal-pool
+    # entries by symbol identity, so where the ROM has two pool slots holding the
+    # same address the source must name it twice: collapsing them onto one symbol
+    # costs func_ov002_02069878 a pool slot (124 vs 128 bytes) and changes
+    # register allocation in func_ov002_0205bbbc from offset 0xc. No C construct
+    # under this compiler defines a second global at an existing address --
+    # alias/weak attributes are ignored, zero-size objects land in .bss, and
+    # section pragmas are rejected -- so the definition has to come from the LCF.
+    # Note only a numeric absolute works; `alias = base;` links as 0.
+    "data_ov002_0207e9f4_default": 0x0207E9F4,
+    "data_ov002_0207ef80_offsets": 0x0207EF80,
 }
 
 
