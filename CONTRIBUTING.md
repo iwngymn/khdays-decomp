@@ -4,6 +4,10 @@ Thanks for helping decompile *Kingdom Hearts 358/2 Days*! The workflow is simple
 pick a function, write code that compiles to the **exact same bytes** as the
 original, and open a PR.
 
+For PR scope, commit titles and message bodies, see
+[Commit and pull request style](docs/CONTRIBUTION_STYLE.md) and the
+[PR template](.github/pull_request_template.md).
+
 ## The one rule: byte-exact
 
 A function is only accepted when it passes byte-exact verification. The verifier
@@ -171,7 +175,8 @@ broken in the extraction or build configuration.
    put it under `src/asm_stubs/auto/` or `src/asm_stubs/calls/` instead —
    ASM stubs do not count as C decompilation progress.
 4. Run the printed `verify_cmd`. Iterate until `>>> MATCH <<<`.
-5. Open a PR with just your new source file(s).
+5. Open a focused PR with your new source file(s) and any necessary declarations
+   or owning build-path changes. Follow the [scope and verification guide](docs/CONTRIBUTION_STYLE.md).
 
 Good first targets:
 
@@ -201,11 +206,10 @@ callback registrations, etc.). When you find one, the fastest path is:
    `ADD Rn, Rn, #imm` offsets, `MOV Rn, #imm` immediates, or the raw
    `dcd` at the tail of the function (the literal pool address of a
    callback / data ref).
-3. **Emit a template C** parameterised by those constants. The 4-byte
-   ARM opcode is deterministic enough that once one file byte-matches
-   from a candidate C body, every other file with the same shape will
-   match too — verify a few samples via the `.o` byte-compare above
-   before committing the batch.
+3. **Emit a template C** parameterised by those constants. Verify every
+   member independently before committing the batch: full bytes, function
+   length, relocation offsets/types/targets/addends, and source meaning.
+   Matching one example does not prove that the rest of the family matches.
 4. **One commit per pattern**. Explain the semantic in the commit
    message (what the function actually does, which registers/fields it
    touches, what the callee ecosystem looks like). Progress that
