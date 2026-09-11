@@ -10,7 +10,7 @@
  * are already-known hand-written asm_stubs siblings (e.g. MTX_Copy43To44_.c);
  * this function is the seventh. A forced compiler probe under matching
  * register pressure picks {r2,r3,ip,lr} + push/pop{lr} every time, on every
- * installed compiler version. See docs-local/IDIOMS.md for the full scan. */
+ * installed compiler version. */
 asm void CP_SaveContext(void *pContext)
 {
     ldr     r1, =0x04000290

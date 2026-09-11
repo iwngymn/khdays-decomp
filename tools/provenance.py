@@ -52,7 +52,7 @@ def load_objects():
 
 _rom = {}
 def module_exact(mod):
-    """True/False for overlays (against the ROM), None for main/itcm/dtcm (gate.py's job)."""
+    """True/False for overlays (against the ROM), None for main/itcm/dtcm, which the linked-module check covers."""
     if not mod.startswith("ov"):
         return None
     if not _rom:

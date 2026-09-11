@@ -5,7 +5,7 @@
       "mode": "arm",
       "size": 64,
       "source": "libs/nitro/gx/asm_stubs/calls/CP_SaveContext.c",
-      "source_sha256": "97ab3f43e6e1e2d7975803e0a6a98268a36afc110ff877c03fa14b41de45331f",
+      "source_sha256": "64dcead51ee367f132b1f205ca874e5eea428c4c55142f3b9e70262c4d21a7ed",
       "target_sha256": "4034224020f4081f046cdf7cf9d0c004aad1275f050493662b665c1e016c3c7e"
     },
     "CPi_RestoreContext": {

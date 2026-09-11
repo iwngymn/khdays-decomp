@@ -14,10 +14,10 @@ typedef struct Box {
     fx32 halfExtent[3];
 } Box;
 
-/* The real definition (libs\nitro\fx\calls\FX_Inv.c) reads only its first
- * argument, but this call site loads and passes a second one. Per IDIOMS.md
- * ("an undeclared trailing parameter is reserving that register"),
- * under-declaring the arity here drops a load the ROM really performs. */
+/* The real definition (libs/nitro/fx/calls/FX_Inv.c) reads only its first
+ * argument, but this call site loads and passes a second one. An undeclared
+ * trailing parameter is how mwcc reserves that register, so declaring one
+ * argument here drops a load the ROM performs. */
 extern int FX_Inv(int x, int y);
 
 static inline fx32 FX_Mul(fx32 a, fx32 b)
