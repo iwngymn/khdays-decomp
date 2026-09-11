@@ -39,6 +39,11 @@ SYM_RE = re.compile(
     r"\s+addr:0x([0-9a-fA-F]+)"
 )
 ANY_SYM_RE = re.compile(r"(\S+)\s+kind:\S+\s+addr:0x([0-9a-fA-F]+)")
+# A label carries a mode but no size: the compiler's own runtime calls land on
+# `_ll_udiv kind:label(arm)`, an alias of the divide entry, and delinked gap
+# objects call `.L_*` labels inside routines. Both are call targets whose mode
+# is known, so they are checked like functions instead of being skipped.
+LABEL_RE = re.compile(r"(\S+)\s+kind:label\((arm|thumb)\)\s+addr:0x([0-9a-fA-F]+)")
 
 R_ARM_PC24 = 1
 R_ARM_ABS32 = 2
@@ -62,6 +67,10 @@ def load_config():
                 size, addr = int(m.group(3), 16), int(m.group(4), 16)
                 syms.append((addr, size, name, mode))
                 fn2sym[name] = (addr, mode)
+            else:
+                ml = LABEL_RE.match(ln)
+                if ml:
+                    fn2sym[ml.group(1)] = (int(ml.group(3), 16), ml.group(2))
             m2 = ANY_SYM_RE.match(ln)
             if m2:
                 any2addr[m2.group(1)] = int(m2.group(2), 16)
@@ -109,12 +118,15 @@ def module_base(module):
 
 
 def module_bins(module):
+    # The extract keeps the main binary and the autoloads under dsd_extract/arm9/,
+    # not at the top of dsd_extract/. With the old top-level paths every main,
+    # itcm and dtcm call site was skipped in silence (get_module stored None).
     if module == "main":
         return (os.path.join(ROOT, "build/build/arm9.bin"),
-                os.path.join(ROOT, "dsd_extract/arm9.bin"))
+                os.path.join(ROOT, "dsd_extract/arm9/arm9.bin"))
     if module in ("itcm", "dtcm"):
         return (os.path.join(ROOT, f"build/build/{module}.bin"),
-                os.path.join(ROOT, f"dsd_extract/{module}.bin"))
+                os.path.join(ROOT, f"dsd_extract/arm9/{module}.bin"))
     return (os.path.join(ROOT, f"build/build/arm9_{module}.bin"),
             os.path.join(ROOT, f"dsd_extract/arm9_overlays/{module}.bin"))
 
@@ -178,10 +190,11 @@ def main():
     modules, fn2sym, any2addr, any2mod = load_config()
 
     objs_txt = os.path.join(ROOT, "build/objects.txt")
-    # dsd writes build/objects.txt with each path wrapped in double quotes; the
-    # open() below fails on a quoted path and the bare except swallows it, so
-    # without this strip every object is skipped and the pass reports all zeros.
-    objects = [ln.strip().strip('"') for ln in open(objs_txt) if ln.strip()]
+    # Some dsd versions write each path wrapped in double quotes; strip them so
+    # the object list survives either spelling.
+    objects = [ln.strip().strip('"') for ln in open(objs_txt, encoding="utf-8")
+               if ln.strip()]
+    unreadable = []
 
     # Load module images lazily
     images = {}
@@ -207,10 +220,11 @@ def main():
     for op in objects:
         try:
             e = ELFFile(open(op, "rb"))
-        except Exception as exc:
-            # An object this pass cannot read is an object whose calls it cannot fix; a
-            # silent skip here surfaces later as an unexplained module mismatch.
-            print("fix_interwork: cannot read %s: %s" % (op, exc), file=sys.stderr)
+        except Exception as ex:
+            # An object that cannot be read is a failure to report, not one to
+            # skip in silence: the summary lists them and the exit code follows,
+            # so an all-zero run can no longer pass for success.
+            unreadable.append((op, str(ex).splitlines()[0] if str(ex) else type(ex).__name__))
             continue
         pathmod = module_of_object(op)
         opn = op.replace("\\", "/")
@@ -369,9 +383,17 @@ def main():
 
     print(f"\nTOTAL: ok={grand['ok']} patched={grand['patched']} "
           f"mismatches={grand['mismatch']} not-call={grand['skipped']} "
-          f"no-sym={grand['nosym']}")
+          f"no-sym={grand['nosym']} unreadable={len(unreadable)}")
+    if unreadable:
+        print(f"!! {len(unreadable)} object(s) listed in build/objects.txt could not be read:")
+        for op, why in unreadable[:20]:
+            print(f"   {op}: {why}")
+        if len(unreadable) > 20:
+            print(f"   ... and {len(unreadable) - 20} more")
     if not write and grand["patched"]:
         print("(dry-run: nothing written; re-run with --write)")
+    if unreadable:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

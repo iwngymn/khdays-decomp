@@ -87,10 +87,11 @@ for attempt in range(8):
     if r.returncode == 0:
         sys.stdout.write(r.stdout)
         sys.stderr.write(r.stderr)
-        # mwcc orders global data by size over [n-1..1, n], never by source order,
-        # and dsd's lcf can only place a whole object per section, so put the
-        # object's data sections in verified address order before it is linked.
-        # Identity for objects with at most one data symbol per section.
+        # mwcc emits one section per global and orders them by its own rule,
+        # while the delinks claim one contiguous range per source in address
+        # order. Put the data sections back in ROM order so the link lays the
+        # file down where the claim says (issue #6). A no-op for objects with
+        # at most one named data global.
         sys.path.insert(0, str(ROOT / "tools"))
         from reorder_data_sections import reorder
         reorder(out_path)
