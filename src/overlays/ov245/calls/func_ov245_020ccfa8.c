@@ -19,6 +19,15 @@
 struct hw60 { unsigned short lo : 8, hi : 8; };
 struct b8 { unsigned f : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x16];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int FX_Inv(int a, int b);
 extern void func_0203c634(void *self, int idx, void *cb);
 extern void func_ov245_020cd668(void);
@@ -39,17 +48,17 @@ void func_ov245_020ccfa8(void *self) {
 
     t = ctx[0xf] + 0xf000;
     ctx[0xe] = FX_Inv(*(int *)(ctx[2] + 8) - t, -0xb000 - t);
-    slot = *(signed char *)(*ctx + 0x1c7);
+    slot = ((struct AiState *)(*ctx))->pendingAction;
     if (slot == -1) {
         return;
     }
-    *(char *)(*ctx + 0x1c6) = slot;
+    ((struct AiState *)(*ctx))->currentAction = slot;
     ((struct hw60 *)(*ctx + 0x60))->hi &= ~0x82;
-    *(unsigned short *)(*ctx + 0x1ae) &= ~3;
+    ((struct AiState *)(*ctx))->flags1ae &= ~3;
     ((struct b8 *)(*(int *)(*ctx + 0x3b4) + 8))->f |= 1;
     ((struct b8 *)(*(int *)(*ctx + 0x3b4) + 8))->f &= ~2;
     ctx[0xf] = 0;
-    switch (*(signed char *)(*ctx + 0x1c6)) {
+    switch (((struct AiState *)(*ctx))->currentAction) {
     case 0:  func_0203c634(self, 1, func_ov245_020cd668); break;
     case 2:  func_0203c634(self, 1, func_ov245_020cd73c); break;
     case 4:  func_0203c634(self, 1, func_ov245_020cd814); break;
@@ -61,5 +70,5 @@ void func_ov245_020ccfa8(void *self) {
     case 10: func_0203c634(self, 1, func_ov245_020ce394); break;
     case 3:  func_0203c634(self, 1, func_ov245_020ce7ec); break;
     }
-    *(char *)(*ctx + 0x1c7) = -1;
+    ((struct AiState *)(*ctx))->pendingAction = -1;
 }

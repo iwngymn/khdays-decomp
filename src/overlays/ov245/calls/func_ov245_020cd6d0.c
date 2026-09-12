@@ -16,6 +16,14 @@
  *    ldrsb + add split instead of one wide-offset ldrb. */
 struct hw60 { unsigned short lo : 8, hi : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1];
+    signed char field_1c9;        /* 0x1c9 */
+};
+
 extern int func_0203c634(int self, int idx, void *handler);
 
 void func_ov245_020cd6d0(int self) {
@@ -31,6 +39,6 @@ void func_ov245_020cd6d0(int self) {
     *(unsigned char *)(*node + 0x4d8) = (unsigned char)((int)((char *)0 + zero) - 1);
     node[0x11] = *(unsigned char *)((char *)node + 0x43) = zero;
     node[0xd] = 0x1000;
-    *(char *)(*node + 0x1c7) = *(char *)(*node + 0x1c9);
+    ((struct AiState *)(*node))->pendingAction = ((struct AiState *)(*node))->field_1c9;
     func_0203c634(self, *(signed char *)(self + 0x20), 0);
 }
