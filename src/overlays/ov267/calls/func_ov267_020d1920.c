@@ -68,6 +68,17 @@ typedef struct {
     signed char queued;
 } Owner;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x80];
+    int field_80;                 /* 0x080 */
+    unsigned char pad084[0x143];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern int func_02023eb4();
 extern int func_ov267_020d121c(int *ctx, int a);
 extern int func_ov267_020d1700(int *ctx);
@@ -103,38 +114,38 @@ int func_ov267_020d1920(int self, int dist) {
     if (func_ov267_020d121c(ctx, 1) != 0 && func_ov267_020d1700(ctx) == 0 &&
         (unsigned int)func_02023eb4(0x64) < 0x14) {
         ctx[0x11] = *(int *)(*(int *)self + 0x2c);
-        *(signed char *)(ctx[0] + 0x1c7) = 5;
+        ((struct AiState *)(ctx[0]))->pendingAction = 5;
     } else if (func_ov267_020d124c(ctx, 1) != 0 && (unsigned int)func_02023eb4(0x64) < 5) {
         ctx[0x11] = *(int *)(*(int *)self + 0x2c);
-        *(signed char *)(ctx[0] + 0x1c7) = 5;
+        ((struct AiState *)(ctx[0]))->pendingAction = 5;
     } else if (dist < 0x3000) {
         if (roll < 0) {
-            *(signed char *)(ctx[0] + 0x1c7) = 6;
+            ((struct AiState *)(ctx[0]))->pendingAction = 6;
         } else if (roll < 0x5a) {
             if (func_ov267_020d121c(ctx, 1) != 0) {
-                *(signed char *)(ctx[0] + 0x1c7) = 0xb;
+                ((struct AiState *)(ctx[0]))->pendingAction = 0xb;
             }
         } else if (roll < 0x64) {
-            *(signed char *)(ctx[0] + 0x1c7) = 9;
+            ((struct AiState *)(ctx[0]))->pendingAction = 9;
         }
     } else if (dist < 0x10000) {
         if (roll < 0x37) {
-            *(signed char *)(ctx[0] + 0x1c7) = 6;
+            ((struct AiState *)(ctx[0]))->pendingAction = 6;
         } else if (roll < 0x50) {
-            *(signed char *)(ctx[0] + 0x1c7) = 9;
+            ((struct AiState *)(ctx[0]))->pendingAction = 9;
         } else if (func_ov267_020d124c(ctx, 1) != 0 && ctx[0x11] >= 0xf000) {
             func_ov267_020d11fc(ctx, 1);
             ctx[0x13] += 0x1100;
-            *(signed char *)(ctx[0] + 0x1c7) = 2;
+            ((struct AiState *)(ctx[0]))->pendingAction = 2;
         }
     } else if (roll < 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 6;
+        ((struct AiState *)(ctx[0]))->pendingAction = 6;
     } else if (roll < 0x46) {
-        *(signed char *)(ctx[0] + 0x1c7) = 9;
+        ((struct AiState *)(ctx[0]))->pendingAction = 9;
     } else if (func_ov267_020d124c(ctx, 1) != 0 && ctx[0x11] >= 0xf000) {
         func_ov267_020d11fc(ctx, 1);
         ctx[0x13] += 0x1100;
-        *(signed char *)(ctx[0] + 0x1c7) = 2;
+        ((struct AiState *)(ctx[0]))->pendingAction = 2;
     }
 
     owner = (Owner *)ctx[0];
@@ -150,7 +161,7 @@ int func_ov267_020d1920(int self, int dist) {
         }
         if (*(int *)((int)owner + 0x5a8) != 0) {
             v = *(VecFx32 *)(*(int *)((int)owner + 0x5a8) + 0x190);
-            v.y = v.y + *(int *)(ctx[0] + 0x80);
+            v.y = v.y + ((struct AiState *)(ctx[0]))->field_80;
             VEC_Subtract(&v, (const VecFx32 *)(ctx[0] + 0x74), &v);
             func_01ff8d18(&v, &v);
         } else {
@@ -161,17 +172,17 @@ int func_ov267_020d1920(int self, int dist) {
             v.y = 0;
             v.z = data_0203d210[idx * 2 + 1];
         }
-        func_01ffa724(dist + (*(int *)(ctx[0] + 0x80) << 1), &v, &v);
+        func_01ffa724(dist + (((struct AiState *)(ctx[0]))->field_80 << 1), &v, &v);
         if (func_01fff920(*(int *)(other + 0x7c), (const VecFx32 *)(ctx[0] + 0x74), &v) != 0 ||
             func_01fff8e8(*(int *)(other + 0x7c), (const VecFx32 *)(ctx[0] + 0x74), &v,
-                          *(int *)(ctx[0] + 0x80), 0) != 0) {
-            *(signed char *)(ctx[0] + 0x1c7) = -1;
+                          ((struct AiState *)(ctx[0]))->field_80, 0) != 0) {
+            ((struct AiState *)(ctx[0]))->pendingAction = -1;
             return 0;
         }
     }
 
-    lo = *(int *)(ctx[0] + 0x224);
-    d = *(int *)(ctx[0] + 0x228) - lo;
+    lo = ((struct AiState *)(ctx[0]))->field_224;
+    d = ((struct AiState *)(ctx[0]))->field_228 - lo;
     if (d < 0) {
         d = -d;
     }

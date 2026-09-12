@@ -22,6 +22,12 @@
 struct Vecx32 { int x, y, z; };
 struct Bit0 { unsigned char b : 1; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 static inline void VEC_Set(struct Vecx32 *vec, int x, int y, int z) {
     vec->x = x;
     vec->y = y;
@@ -48,7 +54,7 @@ void func_ov134_020cd2a8(int self) {
     target = func_ov107_020cab14(*state, 0);
     state[2] = target;
     if (target == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -63,11 +69,11 @@ void func_ov134_020cd2a8(int self) {
     func_01ffa724(func_ov107_020c9f48(*(int *)(*state + 0x3a0), 0), &dir, (void *)(state + 6));
     if (*(unsigned char *)(state[1] + 0xad) == 0) {
         if (((struct Bit0 *)((int)state + 0x42))->b != 0) {
-            *(char *)(*state + 0x1c7) = 7;
+            ((struct AiState *)(*state))->pendingAction = 7;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
             return;
         }
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
     }
 }

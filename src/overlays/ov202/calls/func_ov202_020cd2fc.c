@@ -29,6 +29,14 @@
  */
 struct Vecx32 { int x, y, z; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x110];
+    int field_2d8;                /* 0x2d8 */
+};
+
 static inline void VEC_Set(struct Vecx32 *vec, int x, int y, int z) {
     vec->x = x;
     vec->y = y;
@@ -63,7 +71,7 @@ void func_ov202_020cd2fc(int self) {
 
     state[1] = func_ov107_020cab14(*state, 0);
     if (state[1] == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -80,8 +88,8 @@ void func_ov202_020cd2fc(int self) {
     dot = VEC_DotProduct(&v, &d);
     if (dot < 0) { dot = -dot; }
     func_01ffa724(FX_Mul(dot, 0x300), &v, (void *)(state + 5));
-    if (gap >= *(int *)(*state + 0x2d8)) {
-        *(char *)(*state + 0x1c7) = 2;
+    if (gap >= ((struct AiState *)(*state))->field_2d8) {
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }

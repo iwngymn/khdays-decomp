@@ -40,6 +40,15 @@ typedef struct {
     unsigned char rest : 7;
 } Bits8;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern int func_02023eb4();
 extern int func_ov002_0207298c(void);
 
@@ -93,55 +102,55 @@ int func_ov226_020d0d28(int self, int dist) {
     if (ctx[0x1e] != 0) {
         if (dist < 0x7000) {
             if (roll < 0x1e) {
-                *(signed char *)(ctx[0] + 0x1c7) = 0x10;
+                ((struct AiState *)(ctx[0]))->pendingAction = 0x10;
             } else if (roll < 0x28 && clear != 0) {
-                *(signed char *)(ctx[0] + 0x1c7) = 8;
+                ((struct AiState *)(ctx[0]))->pendingAction = 8;
             } else if (roll < 0x46 && below != 0) {
-                *(signed char *)(ctx[0] + 0x1c7) = 0xb;
+                ((struct AiState *)(ctx[0]))->pendingAction = 0xb;
             } else {
-                *(signed char *)(ctx[0] + 0x1c7) = 9;
+                ((struct AiState *)(ctx[0]))->pendingAction = 9;
             }
         } else if (func_ov002_0207298c() != 8) {
             /* Guard written `!= 8` so the mode-8 block lands OUT OF LINE at the end and this
              * ladder stays inline, matching the ROM's `beq` forward branch. */
             if (roll < thrB) {
-                *(signed char *)(ctx[0] + 0x1c7) = 5;
+                ((struct AiState *)(ctx[0]))->pendingAction = 5;
             } else if (roll < thrB + 0x28 && clear != 0) {
-                *(signed char *)(ctx[0] + 0x1c7) = 8;
+                ((struct AiState *)(ctx[0]))->pendingAction = 8;
             } else if (roll < thrB + 0x41 && below != 0) {
-                *(signed char *)(ctx[0] + 0x1c7) = 0xb;
+                ((struct AiState *)(ctx[0]))->pendingAction = 0xb;
             } else {
-                *(signed char *)(ctx[0] + 0x1c7) = 9;
+                ((struct AiState *)(ctx[0]))->pendingAction = 9;
             }
         } else if (roll < 0x42 && below != 0) {
-            *(signed char *)(ctx[0] + 0x1c7) = 0xb;
+            ((struct AiState *)(ctx[0]))->pendingAction = 0xb;
         } else {
-            *(signed char *)(ctx[0] + 0x1c7) = 9;
+            ((struct AiState *)(ctx[0]))->pendingAction = 9;
         }
     } else if (dist < 0x7000) {
         if (roll < thrA && charged != 0) {
-            *(signed char *)(ctx[0] + 0x1c7) = 0xc;
+            ((struct AiState *)(ctx[0]))->pendingAction = 0xc;
         } else if (roll < thrA + 0x23) {
-            *(signed char *)(ctx[0] + 0x1c7) = 0x10;
+            ((struct AiState *)(ctx[0]))->pendingAction = 0x10;
         } else {
-            *(signed char *)(ctx[0] + 0x1c7) = 9;
+            ((struct AiState *)(ctx[0]))->pendingAction = 9;
         }
     } else if (roll < thrA && charged != 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 0xc;
+        ((struct AiState *)(ctx[0]))->pendingAction = 0xc;
     } else if (roll < thrA + 0x28 && clear != 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 8;
+        ((struct AiState *)(ctx[0]))->pendingAction = 8;
     } else {
-        *(signed char *)(ctx[0] + 0x1c7) = 9;
+        ((struct AiState *)(ctx[0]))->pendingAction = 9;
     }
 
-    lo = *(int *)(ctx[0] + 0x224);
-    d = *(int *)(ctx[0] + 0x228) - lo;
+    lo = ((struct AiState *)(ctx[0]))->field_224;
+    d = ((struct AiState *)(ctx[0]))->field_228 - lo;
     if (d < 0) {
         d = -d;
     }
     ctx[0x1a] = func_02023eb4(d + 1) + lo;
 
-    if (*(signed char *)(ctx[0] + 0x1c7) != -1) {
+    if (((struct AiState *)(ctx[0]))->pendingAction != -1) {
         return 1;
     }
 fail:

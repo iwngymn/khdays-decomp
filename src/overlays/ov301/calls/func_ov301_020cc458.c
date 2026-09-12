@@ -1,6 +1,14 @@
 /* ov301 enemy physics/movement tick (484B). Advances a spawn cursor (x/10 rate),
  * samples a curve, optionally mirrors the velocity vector, applies Q12 fixed-point
  * damping to vx/vz and a clamped ramp to vy, then flags the actor and commits. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x118];
+    unsigned char field_17a;      /* 0x17a */
+};
+
 extern int  func_0203d040(int a, int b, int c, int *d);
 extern void func_0202f188(int *out, int *tbl, int t);
 extern void func_0203c9d0(unsigned int *a, int *b);
@@ -32,7 +40,7 @@ void func_ov301_020cc458(int *param_1) {
     func_0202f188(v, data_02042264, piVar6[9]);
     func_0203c9d0((unsigned int *)(*piVar6 + 0xa0), v);
 
-    if (((unsigned)*(unsigned char *)(*piVar6 + 0x17a) << 0x1e) >> 0x1f) {
+    if (((unsigned)((struct AiState *)(*piVar6))->field_17a << 0x1e) >> 0x1f) {
         int m = -1;
         piVar6[3] = piVar6[3] * m;
         piVar6[5] = piVar6[5] * m;
@@ -50,11 +58,11 @@ void func_ov301_020cc458(int *param_1) {
             piVar6[4] -= 0x34;
     }
 
-    uVar1 = *(unsigned short *)(*piVar6 + 0x60);
+    uVar1 = ((struct AiState *)(*piVar6))->flags60;
     t = ((unsigned)uVar1 << 16) >> 24;
     t |= 4;
-    *(unsigned short *)(*piVar6 + 0x60) =
-        (*(unsigned short *)(*piVar6 + 0x60) & ~0xff00) | ((t << 24) >> 16);
+    ((struct AiState *)(*piVar6))->flags60 =
+        (((struct AiState *)(*piVar6))->flags60 & ~0xff00) | ((t << 24) >> 16);
     ((struct wd *)(*(int *)(*piVar6 + 0x388) + 8))->b |= 2;
 
     func_ov107_020c5c54(*piVar6, desc);

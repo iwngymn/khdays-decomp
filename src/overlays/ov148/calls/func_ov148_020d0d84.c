@@ -2,6 +2,12 @@
  * func_ov107_020c9264 takes three arguments (Ghidra shows five). */
 typedef struct { unsigned short lo : 8, hi : 8; } Hw60;
 typedef struct { unsigned int lo : 8, rest : 24; } Byte8;
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern void func_ov107_020c9264(int owner, int a, int b);
 extern void func_0203c634(int self, int index, void *cb);
 extern void func_ov148_020d0e4c(void);
@@ -16,7 +22,7 @@ void func_ov148_020d0d84(int *self) {
         return;
     }
     ((Hw60 *)(*obj + 0x60))->hi &= ~0x80;
-    *(unsigned short *)(*obj + 0x1ae) &= ~1;
+    ((struct AiState *)(*obj))->flags1ae &= ~1;
     ((Byte8 *)(*(int *)(*obj + 0x38c) + 8))->lo |= 1;
     func_ov107_020c9264(*obj, 0, 0);
     obj[0x10] = 0;

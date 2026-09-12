@@ -10,6 +10,12 @@ struct vec3 { int x, y, z; };
 struct S200b { char pad[0xc]; struct vec3 dst; struct vec3 src; };
 struct hw60 { unsigned short lo : 8, hi : 8; };
 struct b1 { unsigned char b0 : 1; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_01ffa724(int scale, void *in, void *out);
 extern void func_0203c634(int self, int idx, int cb);
 
@@ -26,11 +32,11 @@ void func_ov200_020cfaec(int *self) {
     }
     if (((struct b1 *)(*state + 0x17a))->b0 || ((struct b1 *)(*state + 0x17c))->b0) {
         if (state[0x1a] != 0) {
-            *(char *)(*state + 0x1c7) = 6;
+            ((struct AiState *)(*state))->pendingAction = 6;
             func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
             return;
         }
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
     }
 }

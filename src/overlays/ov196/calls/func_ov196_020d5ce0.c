@@ -14,6 +14,12 @@
  * the function HEAD matches (divisor 3, magic 0x55555556, no post-shift; unlike the tail-position
  * /5 of ov142 which ties). `tmp` before `aim` for the frame; the counter's <= 0 arm first.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020cab14(int obj, int out);
 extern void func_0203c634(int self, int idx, int cb);
 extern void VEC_Subtract(void *a, void *b, void *d);
@@ -44,11 +50,11 @@ void func_ov196_020d5ce0(int *self) {
         c = state[0x12];
         state[0x12] = c - 1;
         if (c - 1 <= 0) {
-            *(char *)(*state + 0x1c7) = 2;
+            ((struct AiState *)(*state))->pendingAction = 2;
             func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
             return;
         }
-        *(char *)(*state + 0x1c7) = 10;
+        ((struct AiState *)(*state))->pendingAction = 10;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
     }
 }

@@ -6,6 +6,12 @@ typedef struct {
     int z;
 } Vec3;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+};
+
 extern char *func_ov002_02076a38(char *pClass, int nSlot);
 extern int func_ov002_0207285c(int nSlot);
 extern int func_0202b87c(int nNode, int nZero, void *pObj, void *pParams,
@@ -80,19 +86,19 @@ char *func_ov002_02079d38(char *pClass, int nSlot, int nBucket,
         *(signed char *)(pElement + 0x1c3) = -1;
         *(signed char *)(pElement + 0x1c4) = -1;
         *(signed char *)(pElement + 0x1c5) = 0;
-        *(signed char *)(pElement + 0x1c6) = -1;
+        ((struct AiState *)(pElement))->currentAction = -1;
         break;
     case 2:
         *(signed char *)(pElement + 0x1c3) = 0;
         *(signed char *)(pElement + 0x1c4) = -1;
         *(signed char *)(pElement + 0x1c5) = 1;
-        *(signed char *)(pElement + 0x1c6) = -1;
+        ((struct AiState *)(pElement))->currentAction = -1;
         break;
     case 4:
         *(signed char *)(pElement + 0x1c3) = 0;
         *(signed char *)(pElement + 0x1c4) = 1;
         *(signed char *)(pElement + 0x1c5) = 2;
-        *(signed char *)(pElement + 0x1c6) = 3;
+        ((struct AiState *)(pElement))->currentAction = 3;
         break;
     }
 

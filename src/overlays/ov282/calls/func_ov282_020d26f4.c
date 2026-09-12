@@ -8,6 +8,14 @@
  * still >= 0x2000, keep waiting. Otherwise clear the *(*state+0x384)+0xa8 flag, set state[0x14] =
  * 0x6000 and hand off to the 020d280c state.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x80];
+    int field_80;                 /* 0x080 */
+    unsigned char pad084[0x143];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int  func_ov107_020cab14(int obj, int flag);
 extern void func_0203c634(int self, int idx, int cb);
 extern void VEC_Subtract(void *a, void *b, void *c);
@@ -27,7 +35,7 @@ void func_ov282_020d26f4(int *self) {
 
     state[4] = target;
     if (target == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
@@ -35,7 +43,7 @@ void func_ov282_020d26f4(int *self) {
     v[1] = 0;
     height = func_01ff8d18(v, v);
     state[0xa] = func_020050b4(v[0], v[2]);
-    height = height - *(int *)(state[4] + 0x80) - *(int *)(*state + 0x80);
+    height = height - *(int *)(state[4] + 0x80) - ((struct AiState *)(*state))->field_80;
     factor = func_ov107_020c9f48(*(int *)(*state + 0x3b8), w);
     func_0202f384((void *)(state + 5), (void *)(*state + 0xa0), w);
     func_01ffa724(factor, (void *)(state + 5), (void *)(state + 5));

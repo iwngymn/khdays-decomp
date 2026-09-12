@@ -5,6 +5,14 @@
  * Also: no cached `owner` local -- the ROM re-reads *obj each time. And the guard is
  * `>= 0x990` (an ARM immediate), not `> 0x98f`. */
 struct vec { int x, y, z; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1cc];
+    int field_394;                /* 0x394 */
+};
+
 extern int  func_ov107_020cab14(int obj, int flag);
 extern void VEC_Subtract();
 extern int  func_01ff8d18();
@@ -18,10 +26,10 @@ void func_ov198_020d0e40(int *self) {
     obj[0x10] = obj[0x10] + *(int *)(self[0] + 0x2c);
     if (*(unsigned char *)((int)obj + 0x45) == 0 && obj[0x10] >= 0x990) {
         *(unsigned char *)((int)obj + 0x45) = 1;
-        *(int *)(*obj + 0x394) = func_ov107_020cab14(*obj, 0);
-        if (*(int *)(*obj + 0x394) != 0) {
+        ((struct AiState *)(*obj))->field_394 = func_ov107_020cab14(*obj, 0);
+        if (((struct AiState *)(*obj))->field_394 != 0) {
             b = *(struct vec *)(*obj + 0x3d8);
-            a = *(struct vec *)(*(int *)(*obj + 0x394) + 0x74);
+            a = *(struct vec *)(((struct AiState *)(*obj))->field_394 + 0x74);
             b.y = b.y + *(int *)(*(int *)(*obj + 0x398) + 0x70);
             a.y = a.y + *(int *)(*(int *)(*obj + 0x398) + 0x70);
             VEC_Subtract(&a, &b, &a);
@@ -30,7 +38,7 @@ void func_ov198_020d0e40(int *self) {
         }
     }
     if (*(unsigned char *)(obj[1] + 0xad) == 0) {
-        *(signed char *)(*obj + 0x1c7) = 2;
+        ((struct AiState *)(*obj))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
     }
 }

@@ -80,6 +80,14 @@ struct Actor {
     void *pfnHandler328;
 };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x5c];
+    int flags5c;                  /* 0x05c */
+    unsigned char pad060[0x14e];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern void *func_ov107_020c9440(void *actor, int index);
 extern void *func_0203b898(void *node);
 extern int func_0203bfb4(int owner, void *sub);
@@ -129,7 +137,7 @@ void func_ov287_020cfc04(struct Actor *actor)
     hw = (unsigned short *)((char *)actor + 0x60);
     h = *hw;
     *hw = h & ~0xff00 | (((((unsigned int)h << 0x10) >> 0x18 | 0x44) << 0x18) >> 0x10);
-    *(u16 *)((char *)actor + 0x1ae) |= 0xc;
+    ((struct AiState *)((char *)actor))->flags1ae |= 0xc;
 
     actor->flags000 |= 0x8000;
 
@@ -145,11 +153,11 @@ void func_ov287_020cfc04(struct Actor *actor)
 
     sub = *(void **)((char *)actor + 0x3c0) = func_0203b898(func_ov107_020c9440(actor, 1));
     func_ov107_020c9074(actor, sub);
-    *(u32 *)((char *)sub + 0x5c) |= 2;
+    ((struct AiState *)((char *)sub))->flags5c |= 2;
 
     sub = *(void **)((char *)actor + 0x3c8) = func_0203b898(func_ov107_020c9440(actor, 2));
     func_ov107_020c9074(actor, sub);
-    *(u32 *)((char *)sub + 0x5c) |= 2;
+    ((struct AiState *)((char *)sub))->flags5c |= 2;
 
     basis.right = data_02042270;
     basis.up = data_02042264;

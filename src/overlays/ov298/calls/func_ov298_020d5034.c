@@ -1,6 +1,12 @@
 typedef struct { int x, y, z; } Vec3;
 struct b2 { unsigned char b0:1, b1:1; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_01ffa724(int s, int dst, int src);
 extern int func_ov298_020d404c(void *param);
 extern unsigned int func_02023e80(unsigned int range);
@@ -26,12 +32,12 @@ void func_ov298_020d5034(int *this)
         *(int *)(node + 0x28) = func_02023e80(0x1922) + 0x1922;
 
         if (diff > 0x9000) {
-            *(signed char *)(*(int *)node + 0x1c7) = 4;
+            ((struct AiState *)(*(int *)node))->pendingAction = 4;
         } else {
             if (*(int *)(node + 0x8c) != 0 && *(int *)(node + 0x40) <= 0) {
-                *(signed char *)(*(int *)node + 0x1c7) = 5;
+                ((struct AiState *)(*(int *)node))->pendingAction = 5;
             } else {
-                *(signed char *)(*(int *)node + 0x1c7) = 4;
+                ((struct AiState *)(*(int *)node))->pendingAction = 4;
             }
         }
     }

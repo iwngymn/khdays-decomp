@@ -8,6 +8,12 @@
  * The hit descriptor at a2 is a 32-bit flag word (bits 0-15 "lo") plus a 16-bit kind
  * ("hi") -- a bitfield container, NOT a u32 plus a (u16) cast: the bare `lsr #0x10`
  * with no paired `lsl` is the tell. See codegen-cracks.md. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020c89e8();
 extern void func_ov107_020c5af8(int obj, int id, unsigned short mode, int node);
 
@@ -45,10 +51,10 @@ int func_ov185_020cfe40(int this, int a1, int a2)
     *(Blk3 *)((char *)p4 + 0x50) = *(Blk3 *)(a2 + 4);
 
     if ((int)*(short *)(this + 0x21a) == 0) {
-        *(char *)(*(int *)p4 + 0x1c7) = 3;
+        ((struct AiState *)(*(int *)p4))->pendingAction = 3;
     } else {
         if ((unsigned short)*(int *)a2 & 0x8000)
-            *(char *)(*(int *)p4 + 0x1c7) = 5;
+            ((struct AiState *)(*(int *)p4))->pendingAction = 5;
     }
 
     if (*(int *)(a2 + 0x28) > 0) {

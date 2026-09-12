@@ -1,12 +1,19 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(void *obj, int idx, void *value);
 extern void func_ov170_020d054c(void);
 extern void func_ov170_020d0634(void);
 void func_ov170_020d04bc(int *node) {
     int *state = (int *)node[1];
-    signed char c = *(signed char *)(*state + 0x1c7);
+    signed char c = ((struct AiState *)(*state))->pendingAction;
     if (c != -1) {
-        *(signed char *)(*state + 0x1c6) = c;
-        switch (*(signed char *)(*state + 0x1c6)) {
+        ((struct AiState *)(*state))->currentAction = c;
+        switch (((struct AiState *)(*state))->currentAction) {
         case 0:
             func_0203c634(node, 1, func_ov170_020d054c);
             break;
@@ -15,5 +22,5 @@ void func_ov170_020d04bc(int *node) {
             break;
         }
     }
-    *(signed char *)(*state + 0x1c7) = 0xff;
+    ((struct AiState *)(*state))->pendingAction = 0xff;
 }

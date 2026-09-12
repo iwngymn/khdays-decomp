@@ -6,6 +6,12 @@
  * THE INDEX. Written as `*(int *)(obj + i * 4 + 0x38c)` mwcc strength-reduces the loop
  * to a running byte offset and grows the frame by 8 bytes; with the constant inside the
  * subscript it recomputes `obj + i*4` every iteration, as the ROM does. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+};
+
 extern void func_0203c634(void *node, int idx, void *cb);
 extern void func_ov242_020d4404(void);
 
@@ -13,8 +19,8 @@ void func_ov242_020d439c(int *node) {
     int *state = (int *)node[1];
     int i = 0;
     {
-        unsigned short hw60 = *(unsigned short *)(state[0] + 0x60);
-        *(unsigned short *)(state[0] + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(state[0]))->flags60;
+        ((struct AiState *)(state[0]))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 0x86) << 0x18) >> 0x10);
     }
     do {

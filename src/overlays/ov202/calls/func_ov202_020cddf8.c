@@ -1,3 +1,9 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x17a];
+    unsigned char field_17a;      /* 0x17a */
+};
+
 extern int func_ov107_020cb100();
 extern int func_ov107_020c9f48();
 extern int func_0202f384();
@@ -23,7 +29,7 @@ void func_ov202_020cddf8(int this) {
     func_01ffa724(r6, s + 0x14, s + 0x14);
 
     p = *(int *)s;
-    if (((unsigned int)(*(unsigned char *)(p + 0x17a) << 0x1f) >> 0x1f) == 0) {
+    if (((unsigned int)(((struct AiState *)(p))->field_17a << 0x1f) >> 0x1f) == 0) {
         return;
     }
     if (*(unsigned char *)(*(int *)(s + 0x44)) != 0) {

@@ -74,6 +74,12 @@ struct HitEvent {
     int damage28;
 };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+};
+
 extern void func_ov107_020c9264(void *owner, int state, int arg);
 extern void VEC_Subtract(VecFx32 *a, VecFx32 *b, VecFx32 *ab);
 extern int func_ov107_020c89e8(struct Actor *actor, struct HitEvent *event);
@@ -89,7 +95,7 @@ int func_ov288_020d3f44(struct Actor *actor, void *other, struct HitEvent *event
     st = actor->pHitState214;
     ids.alternate = data_ov288_020d5314.alternate;
     ids.normal = data_ov288_020d5314.normal;
-    if (*(signed char *)((char *)st->pOwner + 0x1c6) == 2) {
+    if (((struct AiState *)((char *)st->pOwner))->currentAction == 2) {
         if ((event->source14 >> 16) == 0x6b) {
             st->pTarget = other;
             *(u8 *)((char *)st->pOwner + 0x1c7) = 4;

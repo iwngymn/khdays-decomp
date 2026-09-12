@@ -2,6 +2,12 @@
  * obj->fc/f4/f30 from owner, clear owner hw60 hi bits 0x8e, set bit0 of three owner
  * sub-objects' byte-fields, then dispatch 3 states (0/1/2) with their callbacks.
  * owner re-read from *obj per field. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(int self, int index, void *cb);
 extern void func_ov277_020cf99c(void);
 extern void func_ov277_020cfbbc(void);
@@ -12,7 +18,7 @@ void func_ov277_020cf87c(int self) {
     int obj = *(int *)(self + 4);
     int f384;
     *(unsigned char *)(*(int *)obj + 0x1c6) = 0;
-    *(signed char *)(*(int *)obj + 0x1c7) = -1;
+    ((struct AiState *)(*(int *)obj))->pendingAction = -1;
     *(int *)(obj + 0xc) = *(int *)obj + 0xb0;
     f384 = *(int *)(*(int *)obj + 0x384);
     *(int *)(obj + 4) = f384;

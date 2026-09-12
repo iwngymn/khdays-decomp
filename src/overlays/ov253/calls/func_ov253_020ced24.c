@@ -1,3 +1,10 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634();
 extern void func_ov253_020cf04c(void);
 extern void func_ov253_020cedc4(void);
@@ -5,8 +12,8 @@ extern void func_ov253_020ceff4(void);
 
 void func_ov253_020ced24(int this_) {
     int holder = *(int *)(this_ + 4);
-    *(signed char *)(*(int *)holder + 0x1c6) = 0;
-    *(signed char *)(*(int *)holder + 0x1c7) = -1;
+    ((struct AiState *)(*(int *)holder))->currentAction = 0;
+    ((struct AiState *)(*(int *)holder))->pendingAction = -1;
     *(int *)(holder + 4) = *(int *)holder + 0xb0;
     *(int *)(holder + 8) = *(int *)(*(int *)holder + 0x38c) + 0xad;
     {

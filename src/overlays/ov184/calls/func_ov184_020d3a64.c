@@ -15,6 +15,15 @@
  * it into the shift-and-carry sequence itself, and writing the shifts by hand is not what
  * the ROM did.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern void func_01ffa724(int t, const int *src, int *dst);
 extern void func_ov184_020d2164(int *ctx);
 extern int func_02023eb4();
@@ -48,10 +57,10 @@ void func_ov184_020d3a64(int *self) {
         return;
     }
 
-    lo = *(int *)(ctx[0] + 0x224);
-    ctx[0x1d] = lo + func_02023eb4((*(int *)(ctx[0] + 0x228) - lo < 0
-                                    ? -(*(int *)(ctx[0] + 0x228) - lo)
-                                    : *(int *)(ctx[0] + 0x228) - lo) + 1);
-    *(signed char *)(ctx[0] + 0x1c7) = 2;
+    lo = ((struct AiState *)(ctx[0]))->field_224;
+    ctx[0x1d] = lo + func_02023eb4((((struct AiState *)(ctx[0]))->field_228 - lo < 0
+                                    ? -(((struct AiState *)(ctx[0]))->field_228 - lo)
+                                    : ((struct AiState *)(ctx[0]))->field_228 - lo) + 1);
+    ((struct AiState *)(ctx[0]))->pendingAction = 2;
     func_0203c634(self, *(signed char *)((char *)self + 0x20), 0);
 }

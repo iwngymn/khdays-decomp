@@ -12,10 +12,19 @@
  */
 struct flags16 { unsigned short lo : 8, hi : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1c8];
+    int field_390;                /* 0x390 */
+};
+
 int func_ov187_020d3ffc(int self) {
     int *p = *(int **)(self + 0x214);
     int owner = *p;
-    signed char mode = *(signed char *)(owner + 0x1c6);
+    signed char mode = ((struct AiState *)(owner))->currentAction;
     int i;
 
     if (mode == 9) {
@@ -24,7 +33,7 @@ int func_ov187_020d3ffc(int self) {
     }
     if (mode == 6) {
         for (i = 0; i < 4; i++) {
-            int node = ((int *)(*(int *)(*p + 0x390)))[i];
+            int node = ((int *)(((struct AiState *)(*p))->field_390))[i];
             if ((((struct flags16 *)(node + 0x60))->lo & 1) != 0) {
                 void (*cb)(int) = *(void (**)(int))(node + 0x1e0);
                 if (cb != 0) {
@@ -37,7 +46,7 @@ int func_ov187_020d3ffc(int self) {
         int count = 0;
         int j;
         for (j = 0; j < 4; j++) {
-            int node = ((int *)(*(int *)(*p + 0x390)))[j];
+            int node = ((int *)(((struct AiState *)(*p))->field_390))[j];
             if ((((struct flags16 *)(node + 0x60))->lo & 1) != 0) {
                 int (*cb)(int) = *(int (**)(int))(node + 0x1e0);
                 int ret = (cb != 0) ? cb(node) : 0;
@@ -52,7 +61,7 @@ int func_ov187_020d3ffc(int self) {
         if (count == 0) {
             *(unsigned char *)(*p + 0x1c7) = 9;
         }
-    } else if (*(signed char *)(owner + 0x1c7) != 8 && mode != 8 && (mode == 2 || mode == 4)) {
+    } else if (((struct AiState *)(owner))->pendingAction != 8 && mode != 8 && (mode == 2 || mode == 4)) {
         *(unsigned char *)(owner + 0x1c7) = 8;
     }
     return 0;

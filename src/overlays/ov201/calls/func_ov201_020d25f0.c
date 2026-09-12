@@ -9,6 +9,15 @@
 struct b8 { unsigned f : 8; };
 struct q4 { int w[4]; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern void func_0202ea34(int *quat, int a, int b, int c, int e);
 extern int func_02023eb4(int range);
 extern void func_0203c634(int self, int idx, void *cb);
@@ -23,7 +32,7 @@ void func_ov201_020d25f0(int self) {
     int base, diff, r;
 
     *(unsigned char *)(*state + 0x1c6) = 0;
-    *(signed char *)(*state + 0x1c7) = -1;
+    ((struct AiState *)(*state))->pendingAction = -1;
     ((struct b8 *)(*(int *)(*state + 0x388) + 8))->f &= ~1;
     state[0x12] = *state + 0xb0;
     state[0x13] = *state + 0x74;
@@ -32,8 +41,8 @@ void func_ov201_020d25f0(int self) {
     *hw = h & ~0xff00 | (((((unsigned int)h << 0x10) >> 0x18 | 6) << 0x18) >> 0x10);
     func_0202ea34(&state[0x21], 0, 0, 0, 0);
     *(struct q4 *)&state[0x25] = *(struct q4 *)&state[0x21];
-    base = *(int *)(*state + 0x224);
-    diff = *(int *)(*state + 0x228) - base;
+    base = ((struct AiState *)(*state))->field_224;
+    diff = ((struct AiState *)(*state))->field_228 - base;
     if (diff < 0) {
         diff = -diff;
     }

@@ -1,3 +1,9 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern void func_ov107_020c5af8(int a, int b, int c, int d);
 extern void func_0203c634(void *node, int idx, void *cb);
 extern void func_ov123_020cdbf8(void);
@@ -11,7 +17,7 @@ void func_ov123_020cdb38(int *node) {
     state[9] = 0;
     state[10] = 0;
     ((struct hw60 *)(*state + 0x60))->hi &= ~0x9c;
-    *(unsigned short *)(*state + 0x1ae) &= ~3;
+    ((struct AiState *)(*state))->flags1ae &= ~3;
     ((struct ov123b_LowByteFlags *)(*(int *)(*state + 0x388) + 8))->bits |= 1;
     *(struct vec3 *)(state + 0xb) = *(struct vec3 *)((int *)state[2]);
     func_ov107_020c5af8(*state, 0x115, 4, state[2]);

@@ -6,6 +6,12 @@ struct Elem16 {
     int field_0c;
 };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x394];
+    int field_394;                /* 0x394 */
+};
+
 extern int func_ov107_020c9f48(int param_1, int param_2);
 extern void func_0202f384(void *in_vec, int unused, void *out_vec);
 extern int func_0203bec0(int param_1, int param_2);
@@ -22,7 +28,7 @@ void func_ov291_020cd2d0(int *node)
     u8 phase;
 
     actor = *(int *)task;
-    factor = func_ov107_020c9f48(*(int *)(actor + 0x394), (int)local);
+    factor = func_ov107_020c9f48(((struct AiState *)(actor))->field_394, (int)local);
 
     actor = *(int *)task;
     func_0202f384((void *)local, actor + 0xa0, (void *)local);

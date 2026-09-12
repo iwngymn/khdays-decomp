@@ -3,6 +3,17 @@
  * has it. Writing it as `if (in range) { rand } else { state2 }` emits the two blocks
  * the other way round.
  * func_ov117_020cc5c0 takes THREE arguments; Ghidra shows a fourth (leftover in r3). */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+    unsigned char pad22c[0xac];
+    int field_2d8;                /* 0x2d8 */
+};
+
 extern int  func_ov107_020cab14(int obj, int *out);
 extern void func_0203c634(int self, int index, void *cb);
 extern int  FX_Sqrt(int x);
@@ -19,7 +30,7 @@ void func_ov117_020ccdf4(int self) {
 
     target = obj[1] = func_ov107_020cab14(*obj, &dist);
     if (target == 0) {
-        *(signed char *)(*obj + 0x1c7) = 2;
+        ((struct AiState *)(*obj))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -30,8 +41,8 @@ void func_ov117_020ccdf4(int self) {
     func_ov117_020cc5c0((int)obj, obj + 6, dist);
     func_0202f384(obj + 0xb, obj + 2, data_02042258);
     func_01ffa724(0x100, obj + 0xb, obj + 0xb);
-    if (dist <= 0x1000 || dist >= *(int *)(*obj + 0x2d8)) {
-        *(signed char *)(*obj + 0x1c7) = 2;
+    if (dist <= 0x1000 || dist >= ((struct AiState *)(*obj))->field_2d8) {
+        ((struct AiState *)(*obj))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -39,13 +50,13 @@ void func_ov117_020ccdf4(int self) {
         return;
     }
     {
-        int lo = *(int *)(*obj + 0x224);
-        int range = *(int *)(*obj + 0x228) - lo;
+        int lo = ((struct AiState *)(*obj))->field_224;
+        int range = ((struct AiState *)(*obj))->field_228 - lo;
         if (range < 0) {
             range = -range;
         }
         obj[0x10] = lo + func_02023eb4(range + 1);
     }
-    *(signed char *)(*obj + 0x1c7) = 6;
+    ((struct AiState *)(*obj))->pendingAction = 6;
     func_0203c634(self, *(signed char *)(self + 0x20), 0);
 }

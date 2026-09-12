@@ -6,6 +6,12 @@
  * (01ffa724). While the sub-node byte *(u8)state[3] is set, return. Once idle: fire attack 0xd
  * (020c9264), trigger 020c9ee8(*(*state+0x3b8), 2, 0), and hand off to the 020d2918 state.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int  func_ov107_020cab14(int obj, int flag);
 extern void func_0203c634(int self, int idx, int cb);
 extern void VEC_Subtract(void *a, void *b, void *c);
@@ -27,7 +33,7 @@ void func_ov210_020d280c(int *self) {
 
     state[4] = target;
     if (target == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }

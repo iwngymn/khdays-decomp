@@ -29,6 +29,12 @@
  *    v2=sp+0.
  *  - the final state byte is re-read after the store and compared to -1 signed (`ldrsb`).
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020cab14(int obj, int out);
 extern void func_0203c634(int self, int idx, int cb);
 extern int func_ov175_020cca9c(int self, void *out);
@@ -53,7 +59,7 @@ void func_ov175_020cda70(int *self) {
     target = func_ov107_020cab14(*state, 0);
     state[3] = target;
     if (target == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
@@ -91,8 +97,8 @@ void func_ov175_020cda70(int *self) {
         } else {
             st = 5;
         }
-        *(char *)(*state + 0x1c7) = st;
-        if (*(signed char *)(*state + 0x1c7) != -1) {
+        ((struct AiState *)(*state))->pendingAction = st;
+        if (((struct AiState *)(*state))->pendingAction != -1) {
             func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         }
     }

@@ -6,6 +6,12 @@
  * Matched byte-exact 2026-07-23, first compile. One of four byte-identical siblings. */
 typedef struct { int x, y, z; } VecFx32;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_ov107_020c0b90(int obj, int a, VecFx32 v, int d);
 extern void func_ov188_020ce8f8(int *state, int a, int b, int p, int q);
 extern int func_ov107_020cab14(int obj, int a);
@@ -26,13 +32,13 @@ void func_ov188_020cf680(int *node) {
     }
     state[2] = func_ov107_020cab14(state[0], 0);
     if (state[2] == 0) {
-        *(char *)(state[0] + 0x1c7) = 2;
+        ((struct AiState *)(state[0]))->pendingAction = 2;
         func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
         return;
     }
     if (*(unsigned char *)(state[1] + 0xad) != 0) {
         return;
     }
-    *(char *)(state[0] + 0x1c7) = 2;
+    ((struct AiState *)(state[0]))->pendingAction = 2;
     func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
 }

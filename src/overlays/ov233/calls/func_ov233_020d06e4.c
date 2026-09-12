@@ -4,12 +4,18 @@
  * const data_02041dc8. Then copy state[2..4] into the owner block at *state + 0xf0.
  */
 struct vec3 { int x, y, z; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+};
+
 extern struct vec3 data_02041dc8;
 
 void func_ov233_020d06e4(int *self) {
     int *state = (int *)self[1];
 
-    if (*(signed char *)(*state + 0x1c6) == 0) {
+    if (((struct AiState *)(*state))->currentAction == 0) {
         *(struct vec3 *)(state + 2) = data_02041dc8;
     }
     *(struct vec3 *)(*state + 0xf0) = *(struct vec3 *)(state + 2);

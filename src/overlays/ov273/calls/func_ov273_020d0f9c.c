@@ -23,6 +23,17 @@ typedef struct {
     unsigned f : 8;
 } B8;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x14c];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x16];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(int self, int slot, void (*cb)(void));
 extern void func_ov273_020d1294(void);
 extern void func_ov273_020d13b4(void);
@@ -45,23 +56,23 @@ void func_ov273_020d0f9c(int self) {
     unsigned short v;
 
     ctx = *(int **)(self + 4);
-    if (*(signed char *)(ctx[0] + 0x1c7) == -1) {
+    if (((struct AiState *)(ctx[0]))->pendingAction == -1) {
         return;
     }
 
-    v = *(unsigned short *)(ctx[0] + 0x60);
-    *(unsigned short *)(ctx[0] + 0x60) =
+    v = ((struct AiState *)(ctx[0]))->flags60;
+    ((struct AiState *)(ctx[0]))->flags60 =
         (unsigned short)((v & ~0xff00)
                          | (((((unsigned int)v << 0x10) >> 0x18 | 0x40) << 0x18) >> 0x10));
     ((Hw60 *)(ctx[0] + 0x60))->hi &= ~0x8e;
-    *(unsigned short *)(ctx[0] + 0x1ae) &= ~1;
+    ((struct AiState *)(ctx[0]))->flags1ae &= ~1;
     ((B8 *)(*(int *)(ctx[0] + 0x3d4) + 8))->f |= 1;
 
     ctx[0x12] = *(int *)(*(int *)self + 0x2c) * 30 / 10;
     *(unsigned short *)(ctx[0] + 0x1b0) = *(unsigned char *)((char *)ctx + 0x74);
-    *(signed char *)(ctx[0] + 0x1c6) = *(signed char *)(ctx[0] + 0x1c7);
+    ((struct AiState *)(ctx[0]))->currentAction = ((struct AiState *)(ctx[0]))->pendingAction;
 
-    switch (*(signed char *)(ctx[0] + 0x1c6)) {
+    switch (((struct AiState *)(ctx[0]))->currentAction) {
     case 0:
         func_0203c634(self, 1, func_ov273_020d1294);
         break;
@@ -72,7 +83,7 @@ void func_ov273_020d0f9c(int self) {
      * points 8 bytes into case 2's body, past the store. (The store is dead in the original: the
      * tail overwrites +0x1c7 with -1 regardless. Reproduced because the ROM has it.) */
     case 2:
-        *(signed char *)(ctx[0] + 0x1c7) = 5;
+        ((struct AiState *)(ctx[0]))->pendingAction = 5;
         /* fall through */
     case 5:
         func_0203c634(self, 1, func_ov273_020d1980);
@@ -115,5 +126,5 @@ void func_ov273_020d0f9c(int self) {
         break;
     }
 
-    *(signed char *)(ctx[0] + 0x1c7) = -1;
+    ((struct AiState *)(ctx[0]))->pendingAction = -1;
 }

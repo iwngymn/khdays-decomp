@@ -2,18 +2,25 @@
  * high byte of the u16 flags at *(obj)+0x60, dispatch a follow-up handler for sub-state 0 or 2,
  * and finally reset the sub-state to -1. */
 struct hw60 { unsigned short lo : 8; unsigned short hi : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_0203c634(int a, int b, void *handler);
 extern void func_ov273_020d47b0(int);
 extern void func_ov273_020d4868(int);
 void func_ov273_020d46ac(int param_1) {
     int child = *(int *)(param_1 + 4);
-    signed char s = *(signed char *)(*(int *)child + 0x1c7);
+    signed char s = ((struct AiState *)(*(int *)child))->pendingAction;
     if (s == -1) return;
-    *(signed char *)(*(int *)child + 0x1c6) = s;
+    ((struct AiState *)(*(int *)child))->currentAction = s;
     ((struct hw60 *)(*(int *)child + 0x60))->hi &= ~0x9e;
-    switch (*(signed char *)(*(int *)child + 0x1c6)) {
+    switch (((struct AiState *)(*(int *)child))->currentAction) {
     case 0: func_0203c634(param_1, 1, (void *)&func_ov273_020d47b0); break;
     case 2: func_0203c634(param_1, 1, (void *)&func_ov273_020d4868); break;
     }
-    *(signed char *)(*(int *)child + 0x1c7) = -1;
+    ((struct AiState *)(*(int *)child))->pendingAction = -1;
 }

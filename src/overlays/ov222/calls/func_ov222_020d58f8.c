@@ -1,4 +1,10 @@
 /* Bail via 020d132c if not ready; else advance the +0x5c charge, arm the burst past 0x1650, dispatch. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x5c];
+    int flags5c;                  /* 0x05c */
+};
+
 extern int func_ov222_020d314c(int, int);
 extern int func_ov107_020c5af8(int, int, int, int);
 extern int func_0203c634(int, int, int);
@@ -9,8 +15,8 @@ void func_ov222_020d58f8(int param_1) {
         return;
     }
     int a = *(int *)param_1;
-    *(int *)(owner + 0x5c) += *(int *)(a + 0x2c);
-    if (!(*(unsigned char *)(owner + 0x75) & 2) && *(int *)(owner + 0x5c) >= 0x1650) {
+    ((struct AiState *)(owner))->flags5c += *(int *)(a + 0x2c);
+    if (!(*(unsigned char *)(owner + 0x75) & 2) && ((struct AiState *)(owner))->flags5c >= 0x1650) {
         func_ov107_020c5af8(*(int *)owner, 0x12a, 0xd, *(int *)(owner + 8));
         *(unsigned char *)(owner + 0x75) |= 2;
     }

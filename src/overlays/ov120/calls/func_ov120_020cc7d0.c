@@ -4,6 +4,15 @@
  * 0x06 in the hw60 high byte, then register the tick, the reaction and the finish step.
  *
  * Matched byte-exact 2026-07-23, first compile. One of three byte-identical siblings. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x164];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(void *node, int idx, void *cb);
 extern void func_ov120_020ccab4(void);
 extern void func_ov120_020cc898(void);
@@ -14,14 +23,14 @@ struct LowByte { unsigned bits : 8; };
 void func_ov120_020cc7d0(int *node) {
     int *state = (int *)node[1];
 
-    *(char *)(state[0] + 0x1c6) = 0;
-    *(char *)(state[0] + 0x1c7) = -1;
+    ((struct AiState *)(state[0]))->currentAction = 0;
+    ((struct AiState *)(state[0]))->pendingAction = -1;
     ((struct LowByte *)(*(int *)(state[0] + 0x388) + 8))->bits &= ~1;
     state[3] = state[0] + 0x74;
     state[0x12] = *(int *)(state[0] + 0x384) + 0xad;
     {
-        unsigned short hw60 = *(unsigned short *)(state[0] + 0x60);
-        *(unsigned short *)(state[0] + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(state[0]))->flags60;
+        ((struct AiState *)(state[0]))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 6) << 0x18) >> 0x10);
     }
     func_0203c634(node, 1, func_ov120_020ccab4);

@@ -10,6 +10,12 @@
 struct vec3 { int x, y, z; };
 struct Ctx2 { char pad[0x40]; struct vec3 arr[3]; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+};
+
 extern void func_ov107_020c9264(int a, int b, int c);
 extern void func_0203c634(void *self, int idx, void *cb);
 extern void func_ov266_020d308c(void);
@@ -20,8 +26,8 @@ void func_ov266_020d2ff8(void *self) {
     unsigned short v;
 
     ctx[8] = 0;
-    v = *(unsigned short *)(*ctx + 0x60);
-    *(unsigned short *)(*ctx + 0x60) =
+    v = ((struct AiState *)(*ctx))->flags60;
+    ((struct AiState *)(*ctx))->flags60 =
         (unsigned short)((v & ~0xff00) | (((((unsigned int)v << 0x10) >> 0x18 | 1) << 0x18) >> 0x10));
     *(struct vec3 *)((char *)ctx + 0x34) = *(struct vec3 *)ctx[1];
     for (; i < 3; i++) {

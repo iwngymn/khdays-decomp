@@ -4,6 +4,15 @@
  * mirror it into obj[6..9], then arm the three phase callbacks (slots 1/0/2). */
 struct vec4 { int a, b, c, d; };
 struct b8 { unsigned int b : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x164];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern const struct vec4 data_020420f8;
 extern void func_0203c634(int self, int index, void *cb);
 extern void func_ov186_020d2284(void);
@@ -11,14 +20,14 @@ extern void func_ov186_020d1f70(void);
 extern void func_ov186_020d2180(void);
 void func_ov186_020d1e84(int self) {
     int *obj = *(int **)(self + 4);
-    *(char *)(*obj + 0x1c6) = 0;
-    *(char *)(*obj + 0x1c7) = -1;
+    ((struct AiState *)(*obj))->currentAction = 0;
+    ((struct AiState *)(*obj))->pendingAction = -1;
     ((struct b8 *)(*(int *)(*obj + 0x388) + 8))->b &= ~1;
     obj[0x11] = *obj + 0x74;
     obj[0x12] = *(int *)(*obj + 0x384) + 0xad;
     {
-        unsigned short v = *(unsigned short *)(*obj + 0x60);
-        *(unsigned short *)(*obj + 0x60) =
+        unsigned short v = ((struct AiState *)(*obj))->flags60;
+        ((struct AiState *)(*obj))->flags60 =
             (unsigned short)((v & ~0xff00) | (((((unsigned int)v << 0x10) >> 0x18 | 6) << 0x18) >> 0x10));
     }
     *(struct vec4 *)(obj + 2) = data_020420f8;

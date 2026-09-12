@@ -27,6 +27,13 @@
  */
 typedef struct { int w[11]; } SrtTransform;   /* 44 bytes, the node's SRT block */
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c650(int owner, int handle);
 extern void func_ov107_020cb100(void *attachment);
 extern void func_ov107_020c7ca4(void *actor);
@@ -36,19 +43,19 @@ void func_ov170_020ce470(char *actor) {
     int state;
 
     if ((*(unsigned char *)(actor + 0x1c4) & 0xa) != 0 &&
-        *(signed char *)(actor + 0x1c7) == -1) {
-        state = *(signed char *)(actor + 0x1c6);
+        ((struct AiState *)(actor))->pendingAction == -1) {
+        state = ((struct AiState *)(actor))->currentAction;
         if (state != 0 && state != 1 && state != 3 && state != 0xc) {
-            *(signed char *)(actor + 0x1c7) = 0xc;
+            ((struct AiState *)(actor))->pendingAction = 0xc;
         }
     }
 
-    if (*(signed char *)(actor + 0x1c6) != 8 && *(int *)(*(char **)(actor + 0x39c) + 4) != 0) {
+    if (((struct AiState *)(actor))->currentAction != 8 && *(int *)(*(char **)(actor + 0x39c) + 4) != 0) {
         func_0203c650(*(int *)(actor + 0x3c), *(int *)(*(char **)(actor + 0x39c) + 4));
         *(int *)(*(char **)(actor + 0x39c) + 4) = 0;
     }
 
-    if (*(signed char *)(actor + 0x1c6) != 9) {
+    if (((struct AiState *)(actor))->currentAction != 9) {
         for (i = 0; i < 2; i++) {
             if (((void **)(actor + 0x3a0))[i] != 0) {
                 func_ov107_020cb100(((void **)(actor + 0x3a0))[i]);
@@ -57,7 +64,7 @@ void func_ov170_020ce470(char *actor) {
         }
     }
 
-    if (*(signed char *)(actor + 0x1c6) != 8 && *(void **)(actor + 0x3a8) != 0) {
+    if (((struct AiState *)(actor))->currentAction != 8 && *(void **)(actor + 0x3a8) != 0) {
         func_ov107_020cb100(*(void **)(actor + 0x3a8));
         *(void **)(actor + 0x3a8) = 0;
     }

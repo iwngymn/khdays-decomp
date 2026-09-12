@@ -1,4 +1,10 @@
 struct hw60 { unsigned short lo : 8, hi : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void MTX_RotY33_();
 extern void MTX_MultVec33();
 extern void func_0203c634(void *obj, int idx, void *value);
@@ -12,7 +18,7 @@ void func_ov239_020cd6c8(int *node) {
     MTX_MultVec33(*(int *)(*state + 0x398) + 0x2c, mtx, state + 5);
     ((struct hw60 *)(*state + 0x60))->hi &= ~0x40;
     if (*(unsigned char *)(state[1] + 0xad) == 0) {
-        *(signed char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634(node, *(signed char *)(node + 8), 0);
     }
 }

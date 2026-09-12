@@ -1,3 +1,12 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern unsigned int func_02023eb4(unsigned int range);
 extern void func_0203c634(int *a, int i, int v);
 
@@ -8,10 +17,10 @@ void func_ov284_020ccb30(int param_1) {
     int base, d;
     if (*(unsigned char *)*(int *)(child + 8) != 0) return;
     if (!((EnabledFlag *)(*(int *)child + 0x17a))->enabled) return;
-    base = *(int *)(*(int *)child + 0x224);
-    d = *(int *)(*(int *)child + 0x228) - base;
+    base = ((struct AiState *)(*(int *)child))->field_224;
+    d = ((struct AiState *)(*(int *)child))->field_228 - base;
     if (d < 0) d = -d;
     *(int *)(child + 0x20) = base + func_02023eb4(d + 1);
-    *(signed char *)(*(int *)child + 0x1c7) = 2;
+    ((struct AiState *)(*(int *)child))->pendingAction = 2;
     func_0203c634((int *)param_1, *(signed char *)(param_1 + 0x20), 0);
 }

@@ -11,6 +11,14 @@
  * One of three byte-identical siblings. */
 struct vec3 { int x, y, z; };
 struct hw60 { unsigned short lo : 8, hi : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1];
+    signed char field_1c9;        /* 0x1c9 */
+};
+
 static inline void VEC_Set(struct vec3 *v, int x, int y, int z) {
     v->x = x;
     v->y = y;
@@ -30,6 +38,6 @@ void func_ov187_020d47d8(int *self) {
     { struct vec3 *p = (struct vec3 *)state[0x11];
       VEC_Set(&v, p->x, p->y + 0xc00, p->z); }
     func_ov107_020c5c54(*state, &v);
-    *(char *)(*state + 0x1c7) = *(signed char *)(*state + 0x1c9);
+    ((struct AiState *)(*state))->pendingAction = ((struct AiState *)(*state))->field_1c9;
     func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
 }

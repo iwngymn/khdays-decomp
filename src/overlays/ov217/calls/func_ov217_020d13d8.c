@@ -1,3 +1,9 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020cab14(int node, int flag);
 extern int func_0203c634();
 extern int VEC_Subtract();
@@ -14,7 +20,7 @@ void func_ov217_020d13d8(int this_) {
     r = func_ov107_020cab14(*(int *)holder, 0);
     *(int *)(holder + 8) = r;
     if (r == 0) {
-        *(signed char *)(*(int *)holder + 0x1c7) = 2;
+        ((struct AiState *)(*(int *)holder))->pendingAction = 2;
         func_0203c634(this_, *(signed char *)(this_ + 0x20), 0);
         return;
     }
@@ -27,5 +33,5 @@ void func_ov217_020d13d8(int this_) {
         func_0203c634(this_, *(signed char *)(this_ + 0x20), 0);
         return;
     }
-    *(signed char *)(*(int *)holder + 0x1c7) = 4;
+    ((struct AiState *)(*(int *)holder))->pendingAction = 4;
 }

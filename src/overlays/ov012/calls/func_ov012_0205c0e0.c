@@ -28,6 +28,12 @@ typedef struct {
     int unk4;
 } Ov024_RecordRef;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x5c];
+    int flags5c;                  /* 0x05c */
+};
+
 extern int func_ov012_0205bcf0(int stream);
 extern void func_0202fafc(int stream, Ov024_RecordRef *out, int status);
 extern int func_ov012_0205bbac(int stream);
@@ -53,11 +59,11 @@ int func_ov012_0205c0e0(int stream) {
 
         func_0202fb58(stream,
                       *(int *)(stream + 0x58) + *(unsigned short *)(stream + 0x48) + 1,
-                      *(int *)(stream + 0x5c) + *(unsigned short *)(stream + 0x4c) + 1,
+                      ((struct AiState *)(stream))->flags5c + *(unsigned short *)(stream + 0x4c) + 1,
                       2, &ref);
         func_0202fb58(stream,
                       *(int *)(stream + 0x58) + *(unsigned short *)(stream + 0x48),
-                      *(int *)(stream + 0x5c) + *(unsigned short *)(stream + 0x4c),
+                      ((struct AiState *)(stream))->flags5c + *(unsigned short *)(stream + 0x4c),
                       *(int *)(stream + 0x60), &ref);
 
         *(int *)(stream + 0x58) += advance;

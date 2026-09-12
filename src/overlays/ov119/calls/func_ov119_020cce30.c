@@ -6,6 +6,13 @@
  */
 struct hw60 { unsigned short lo : 8, hi : 8; };
 struct b8 { unsigned f : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(int self, int idx, int cb);
 extern void func_ov119_020cd144(void);
 extern void func_ov119_020ccef4(void);
@@ -16,8 +23,8 @@ void func_ov119_020cce30(int *self) {
     unsigned short *hw;
     unsigned int h;
 
-    *(char *)(*state + 0x1c6) = 0;
-    *(char *)(*state + 0x1c7) = -1;
+    ((struct AiState *)(*state))->currentAction = 0;
+    ((struct AiState *)(*state))->pendingAction = -1;
     ((struct b8 *)(*(int *)(*state + 0x388) + 8))->f &= ~1;
     hw = (unsigned short *)(*state + 0x60);
     h = *hw;

@@ -20,6 +20,12 @@
 typedef struct { int x, y, z; } Vec3;
 struct hw60 { unsigned short lo : 8, hi : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+};
+
 extern int func_02023eb4();
 extern int func_01ff8d18(const Vec3 *v, Vec3 *unit);
 extern void VEC_CrossProduct(const Vec3 *a, const Vec3 *b, Vec3 *dst);
@@ -35,8 +41,8 @@ void func_ov118_020d12d8(int *self) {
     int z, y, x;
 
     {
-        unsigned short hw60 = *(unsigned short *)(*ctx + 0x60);
-        *(unsigned short *)(*ctx + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(*ctx))->flags60;
+        ((struct AiState *)(*ctx))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 6) << 0x18) >> 0x10);
     }
     ctx[0xa] = *(int *)(self[0] + 0x2c) * 0x1e;

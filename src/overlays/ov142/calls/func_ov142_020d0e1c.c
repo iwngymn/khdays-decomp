@@ -10,6 +10,12 @@
  * One of five byte-identical siblings. */
 typedef struct { int x, y, z; } VecFx32;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_01ffa724(int a, void *b, void *c);
 extern int func_02023eb4();
 extern void func_0203c634(void *node, int idx, void *cb);
@@ -32,9 +38,9 @@ void func_ov142_020d0e1c(int *node) {
     }
     roll = func_02023eb4(0x65) + (scratch - scratch);
     if (roll < 0x28) {
-        *(char *)(state[0] + 0x1c7) = 6;
+        ((struct AiState *)(state[0]))->pendingAction = 6;
     } else {
-        *(char *)(state[0] + 0x1c7) = 5;
+        ((struct AiState *)(state[0]))->pendingAction = 5;
     }
     func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
 }

@@ -5,6 +5,14 @@
  * dir = normalise(flatten_y(target(+0x190) - state[0x13])); state[4] = atan2(dir.x, dir.z). Set the
  * turn rate state[5] = owner_delta * 30 / 5, then hand off to the 020cd7e8 state.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x17];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int  func_ov107_020cab14(int obj, int flag);
 extern void func_0203c634(int self, int idx, int cb);
 extern void VEC_Subtract(void *a, void *b, void *c);
@@ -20,7 +28,7 @@ void func_ov137_020cd6fc(int *self) {
     target = func_ov107_020cab14(*state, 0);
     state[2] = target;
     if (target == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
@@ -29,7 +37,7 @@ void func_ov137_020cd6fc(int *self) {
     v[1] = 0;
     func_01ff8d18(v, v);
     state[4] = func_020050b4(v[0], v[2]);
-    *(unsigned short *)(*state + 0x1ae) |= 8;
+    ((struct AiState *)(*state))->flags1ae |= 8;
     state[5] = *(int *)(*self + 0x2c) * 0x1e / 5;
     func_0203c634((int)self, *(signed char *)((int)self + 0x20), (int)&func_ov137_020cd7e8);
 }

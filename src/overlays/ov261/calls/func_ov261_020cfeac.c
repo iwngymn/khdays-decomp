@@ -1,3 +1,9 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+};
+
 extern void func_ov015_02080c00(int a, int b, int c, int d);
 extern void func_0203d194(int p);
 extern void func_0203c7e8(int p);
@@ -6,7 +12,7 @@ extern void func_ov107_020c68ec(int p);
 void func_ov261_020cfeac(int this_) {
     if (*(int *)(this_ + 0x3a4) != 0 &&
         *(int *)(this_ + 0x3a8) != 0 &&
-        *(signed char *)(this_ + 0x1c6) != 2 &&
+        ((struct AiState *)(this_))->currentAction != 2 &&
         *(int *)(*(int *)(this_ + 0x3a0)) != 0) {
         int e = *(unsigned char *)(this_ + 0x3ad);
         int flag = 0;

@@ -35,6 +35,15 @@ typedef struct {
     int slots[3];
 } Owner;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x16];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov212_020ce2f0(int self);
 extern void func_ov022_020ad8e0(int a, int b);
 extern void func_0203c634(int self, int slot, void (*cb)(void));
@@ -59,14 +68,14 @@ void func_ov212_020ce50c(int self) {
     int i;
 
     ctx = *(int **)(self + 4);
-    if (*(signed char *)(ctx[0] + 0x1c7) != -1) {
+    if (((struct AiState *)(ctx[0]))->pendingAction != -1) {
         if (func_ov212_020ce2f0(self) == 0) {
             return;
         }
 
-        *(signed char *)(ctx[0] + 0x1c6) = *(signed char *)(ctx[0] + 0x1c7);
+        ((struct AiState *)(ctx[0]))->currentAction = ((struct AiState *)(ctx[0]))->pendingAction;
         ((Hw60 *)(ctx[0] + 0x60))->hi &= ~0xc6;
-        *(unsigned short *)(ctx[0] + 0x1ae) &= ~3;
+        ((struct AiState *)(ctx[0]))->flags1ae &= ~3;
 
         for (i = 0; i < 3; i++) {
             if (i == 0) {
@@ -83,7 +92,7 @@ void func_ov212_020ce50c(int self) {
 
         /* Written as a != chain: 6,7,8 are contiguous, and the == form gets range-optimised into
          * `sub r1,#6 ; cmp r1,#2`, where the ROM has three explicit `cmp`/`cmpne`. */
-        switch (*(signed char *)(ctx[0] + 0x1c6)) {
+        switch (((struct AiState *)(ctx[0]))->currentAction) {
         case 6:
         case 7:
         case 8:
@@ -94,7 +103,7 @@ void func_ov212_020ce50c(int self) {
             break;
         }
 
-        switch (*(signed char *)(ctx[0] + 0x1c6)) {
+        switch (((struct AiState *)(ctx[0]))->currentAction) {
         case 0:
             func_0203c634(self, 1, func_ov212_020ce998);
             break;
@@ -143,5 +152,5 @@ void func_ov212_020ce50c(int self) {
         }
     }
 
-    *(signed char *)(ctx[0] + 0x1c7) = -1;
+    ((struct AiState *)(ctx[0]))->pendingAction = -1;
 }

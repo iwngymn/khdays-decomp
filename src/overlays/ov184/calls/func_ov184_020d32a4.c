@@ -1,5 +1,13 @@
 struct hw60 { unsigned short lo:8, hi:8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1cc];
+    int field_394;                /* 0x394 */
+};
+
 extern void func_0203c634(void *node, int slot, void *cb);
 extern void VEC_Add(void *a, void *b, void *out);
 extern void func_01ffa724(int scale, void *src, void *dst);
@@ -13,9 +21,9 @@ extern short data_0203d210[];
 
 void func_ov184_020d32a4(int *param_1) {
     int *state = (int *)param_1[1];
-    *(int *)(*state + 0x394) = 1;
+    ((struct AiState *)(*state))->field_394 = 1;
     if (state[4] == 0) {
-        *(signed char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634(param_1, *(signed char *)(param_1 + 8), 0);
         return;
     }

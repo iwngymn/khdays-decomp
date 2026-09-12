@@ -27,6 +27,15 @@ typedef struct {
     unsigned short hi : 8;
 } Hw60;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern int func_02023eb4(int n);
 
 int func_ov229_020d2d90(int self, int range) {
@@ -41,8 +50,8 @@ int func_ov229_020d2d90(int self, int range) {
     ctx = *(int **)(self + 4);
     if (ctx[0x15] <= 0) {
         roll = func_02023eb4(100);
-        lo = *(int *)(ctx[0] + 0x224);
-        spread = *(int *)(ctx[0] + 0x228) - lo;
+        lo = ((struct AiState *)(ctx[0]))->field_224;
+        spread = ((struct AiState *)(ctx[0]))->field_228 - lo;
         if (spread < 0) {
             spread = -spread;
         }
@@ -60,7 +69,7 @@ int func_ov229_020d2d90(int self, int range) {
 
         queued = *(signed char *)((char *)ctx + 0x60);
         if (queued != -1) {
-            *(signed char *)(ctx[0] + 0x1c7) = queued;
+            ((struct AiState *)(ctx[0]))->pendingAction = queued;
             *(signed char *)((char *)ctx + 0x60) = -1;
             goto done;
         }
@@ -73,7 +82,7 @@ int func_ov229_020d2d90(int self, int range) {
             if ((unsigned int)func_02023eb4(100) < 0x32) {
                 ctx[0x17] = 1;
                 ctx[0x15] = 0;
-                *(signed char *)(ctx[0] + 0x1c7) = 4;
+                ((struct AiState *)(ctx[0]))->pendingAction = 4;
 
                 if (roll < 0x14 && slotFree) {
                     *(signed char *)((char *)ctx + 0x60) = 0xb;
@@ -98,37 +107,37 @@ int func_ov229_020d2d90(int self, int range) {
             /* if/else with a store in each arm, not a ternary: the ternary picks the value with
              * movlt/movge and does ONE strb, where the ROM emits strblt + strbge. */
             if (roll < 0x3c) {
-                *(signed char *)(ctx[0] + 0x1c7) = 6;
+                ((struct AiState *)(ctx[0]))->pendingAction = 6;
             } else {
-                *(signed char *)(ctx[0] + 0x1c7) = 8;
+                ((struct AiState *)(ctx[0]))->pendingAction = 8;
             }
             goto done;
         }
 
         if (range < 0x8000) {
             if (roll < 0x21 && slotFree) {
-                *(signed char *)(ctx[0] + 0x1c7) = 0xb;
+                ((struct AiState *)(ctx[0]))->pendingAction = 0xb;
                 goto done;
             }
             if (roll < 0x42) {
-                *(signed char *)(ctx[0] + 0x1c7) = 0xa;
+                ((struct AiState *)(ctx[0]))->pendingAction = 0xa;
             } else {
-                *(signed char *)(ctx[0] + 0x1c7) = 8;
+                ((struct AiState *)(ctx[0]))->pendingAction = 8;
             }
             goto done;
         }
 
         if (roll < 0x32 && slotFree) {
-            *(signed char *)(ctx[0] + 0x1c7) = 0xb;
+            ((struct AiState *)(ctx[0]))->pendingAction = 0xb;
             goto done;
         }
-        *(signed char *)(ctx[0] + 0x1c7) = 0xa;
+        ((struct AiState *)(ctx[0]))->pendingAction = 0xa;
 
     done:
         /* `return X != -1;` would emit movne/moveq/pop. The ROM instead returns 1 and falls into
          * the SAME `mov r0,#0 ; pop` block the cooldown guard branches to, so both zero-returns
          * share one exit. */
-        if (*(signed char *)(ctx[0] + 0x1c7) != -1) {
+        if (((struct AiState *)(ctx[0]))->pendingAction != -1) {
             return 1;
         }
     }

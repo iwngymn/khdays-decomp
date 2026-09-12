@@ -54,6 +54,12 @@
  *    the size to 928). Note this is a SECOND local holding ctx[0] alongside `owner`: `owner` is a
  *    snapshot taken earlier, so the two are not interchangeable to the compiler. */
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020cab14(int obj, int kind);
 extern void VEC_Subtract(const int *a, const int *b, int *dst);
 extern int func_020050b4(int x, int z);
@@ -105,7 +111,7 @@ void func_ov235_020cd994(int self) {
     }
 
     if (ctx[0x14] >= 0x1e000) {
-        *(signed char *)(ctx[0] + 0x1c7) = 12;
+        ((struct AiState *)(ctx[0]))->pendingAction = 12;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -116,15 +122,15 @@ void func_ov235_020cd994(int self) {
             dot = -dot;
         }
         if (dot > 0x1800) {
-            *(signed char *)(ctx[0] + 0x1c7) = 12;
+            ((struct AiState *)(ctx[0]))->pendingAction = 12;
         } else if (gap > 0x6000) {
             roll = func_02023eb4(0x65) + (gap - gap);
             if (roll < 0x1e) {
-                *(signed char *)(ctx[0] + 0x1c7) = 12;
+                ((struct AiState *)(ctx[0]))->pendingAction = 12;
             } else if (roll < 0x3c) {
-                *(signed char *)(ctx[0] + 0x1c7) = 4;
+                ((struct AiState *)(ctx[0]))->pendingAction = 4;
             } else {
-                *(signed char *)(ctx[0] + 0x1c7) = 9;
+                ((struct AiState *)(ctx[0]))->pendingAction = 9;
             }
         } else {
             VEC_Subtract(data_02041dc8, (const int *)ctx[1], anchorDir);
@@ -132,16 +138,16 @@ void func_ov235_020cd994(int self) {
             if (func_01ff8d18(anchorDir, anchorDir) < 0x8000) {
                 func_0202f384(forward, &ctx[7], data_02042258);
                 if (VEC_DotProduct(forward, anchorDir) > 0x400) {
-                    *(signed char *)(ctx[0] + 0x1c7) = 9;
+                    ((struct AiState *)(ctx[0]))->pendingAction = 9;
                     func_0203c634(self, *(signed char *)(self + 0x20), 0);
                     return;
                 }
             }
             roll = func_02023eb4(0x65) + (gap - gap);
             if (roll < 0x46) {
-                *(signed char *)(ctx[0] + 0x1c7) = 8;
+                ((struct AiState *)(ctx[0]))->pendingAction = 8;
             } else {
-                *(signed char *)(ctx[0] + 0x1c7) = 9;
+                ((struct AiState *)(ctx[0]))->pendingAction = 9;
             }
         }
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
@@ -156,7 +162,7 @@ void func_ov235_020cd994(int self) {
     func_01ff8d18(ownerDir, ownerDir);
     dot = VEC_DotProduct(targetDir, ownerDir);
     if (gap >= 0x8000 || dot < -0x400) {
-        *(signed char *)(ctx[0] + 0x1c7) = 4;
+        ((struct AiState *)(ctx[0]))->pendingAction = 4;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -168,17 +174,17 @@ void func_ov235_020cd994(int self) {
     }
     roll = func_02023eb4(3) + (gap - gap);
     if (roll == 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 5;
+        ((struct AiState *)(ctx[0]))->pendingAction = 5;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
     if (roll == 1) {
-        *(signed char *)(ctx[0] + 0x1c7) = 6;
+        ((struct AiState *)(ctx[0]))->pendingAction = 6;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
     if (roll == 2) {
-        *(signed char *)(ctx[0] + 0x1c7) = 7;
+        ((struct AiState *)(ctx[0]))->pendingAction = 7;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
     }
 }

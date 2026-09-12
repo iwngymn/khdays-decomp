@@ -28,6 +28,12 @@
  * `>= 0x14` rather than `> 0x13` -- the other spelling flips the branch.
  */
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020cab14(int obj, int *outDistSq);
 extern void func_0203c634(int self, int slot, void (*cb)(void));
 extern int FX_Sqrt(int x);
@@ -53,21 +59,21 @@ void func_ov211_020d2b44(int self) {
     if (ctx[0x1b] <= 0) {
         if (d <= 0x1000) {
             if (func_02023eb4(0x65) + (d - d) <= 0x46) {
-                *(signed char *)(ctx[0] + 0x1c7) = 15;
+                ((struct AiState *)(ctx[0]))->pendingAction = 15;
                 func_0203c634(self, *(signed char *)(self + 0x20), 0);
                 return;
             }
-            *(signed char *)(ctx[0] + 0x1c7) = 5;
+            ((struct AiState *)(ctx[0]))->pendingAction = 5;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
             return;
         }
-        *(signed char *)(ctx[0] + 0x1c7) = 5;
+        ((struct AiState *)(ctx[0]))->pendingAction = 5;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
 
     if (d >= 0x8000) {
-        *(signed char *)(ctx[0] + 0x1c7) = 10;
+        ((struct AiState *)(ctx[0]))->pendingAction = 10;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -75,32 +81,32 @@ void func_ov211_020d2b44(int self) {
     if (d >= 0x3000) {
         roll = func_02023eb4(0x65) + (d - d);
         if (roll < 0x28) {
-            *(signed char *)(ctx[0] + 0x1c7) = 10;
+            ((struct AiState *)(ctx[0]))->pendingAction = 10;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
             return;
         }
         if (roll < 0x3c) {
-            *(signed char *)(ctx[0] + 0x1c7) = 13;
+            ((struct AiState *)(ctx[0]))->pendingAction = 13;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
             return;
         }
         if (roll < 0x50) {
-            *(signed char *)(ctx[0] + 0x1c7) = 12;
+            ((struct AiState *)(ctx[0]))->pendingAction = 12;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
             return;
         }
         if (roll < 99) {
-            *(signed char *)(ctx[0] + 0x1c7) = 11;
+            ((struct AiState *)(ctx[0]))->pendingAction = 11;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
             return;
         }
-        *(signed char *)(ctx[0] + 0x1c7) = 9;
+        ((struct AiState *)(ctx[0]))->pendingAction = 9;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
 
     if (func_02023eb4(0x65) + (d - d) == 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 9;
+        ((struct AiState *)(ctx[0]))->pendingAction = 9;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -108,11 +114,11 @@ void func_ov211_020d2b44(int self) {
         return;
     }
     if (func_02023eb4(0x65) + (d - d) < 0x32) {
-        *(signed char *)(ctx[0] + 0x1c7) = 13;
+        ((struct AiState *)(ctx[0]))->pendingAction = 13;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
-    *(signed char *)(ctx[0] + 0x1c7) = 12;
+    ((struct AiState *)(ctx[0]))->pendingAction = 12;
     func_0203c634(self, *(signed char *)(self + 0x20), 0);
     return;
 }

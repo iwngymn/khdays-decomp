@@ -4,6 +4,12 @@
  * the ROM's 16-bit truncation) and the OR is the explicit shift expression (it does not).
  *
  * One of three byte-identical siblings. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+};
+
 extern void func_0203c634(void *node, int idx, void *cb);
 extern void func_ov178_020cebe0(void);
 
@@ -14,8 +20,8 @@ void func_ov178_020ceb74(int *node) {
 
     ((struct hw60 *)(state[0] + 0x60))->hi &= ~1;
     {
-        unsigned short hw60 = *(unsigned short *)(state[0] + 0x60);
-        *(unsigned short *)(state[0] + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(state[0]))->flags60;
+        ((struct AiState *)(state[0]))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 0x82) << 0x18) >> 0x10);
     }
     func_0203c634(node, *(signed char *)((int)node + 0x20), func_ov178_020cebe0);

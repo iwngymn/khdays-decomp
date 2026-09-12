@@ -23,6 +23,12 @@ typedef struct {
     int z;
 } VecFx32;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_ov231_020cc9e0(int self);
 extern void func_ov231_020cca74(VecFx32 *out, int self, const VecFx32 *ref);
 extern void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *out);
@@ -67,7 +73,7 @@ void func_ov231_020cd920(int self) {
     if (func_02023eb4(5) == 0 && ctx[8] < 0x5000) {
         *(unsigned char *)((char *)ctx + 0x49) = 2;
         ctx[9] = 0;
-        *(signed char *)(ctx[0] + 0x1c7) = 0xb;
+        ((struct AiState *)(ctx[0]))->pendingAction = 0xb;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -80,7 +86,7 @@ void func_ov231_020cd920(int self) {
     }
 
     if (ctx[0x16] == 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 4;
+        ((struct AiState *)(ctx[0]))->pendingAction = 4;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }

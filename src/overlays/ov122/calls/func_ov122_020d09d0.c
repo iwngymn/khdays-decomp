@@ -25,6 +25,14 @@
  */
 struct Vecx32 { int x, y, z; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x110];
+    int field_2d8;                /* 0x2d8 */
+};
+
 static inline void VEC_Set(struct Vecx32 *vec, int x, int y, int z) {
     vec->x = x;
     vec->y = y;
@@ -60,7 +68,7 @@ void func_ov122_020d09d0(int *self) {
     own = *state;
     gap = (func_01ff8d18(&aim, &aim) - *(int *)(tgt + 0x80)) - *(int *)(own + 0x80);
     state[5] = func_020050b4(aim.x, aim.z);
-    if (gap > *(int *)(*state + 0x2d8)) {
+    if (gap > ((struct AiState *)(*state))->field_2d8) {
         return;
     }
     c = state[0x10] - *(int *)(*self + 0x2c);
@@ -70,11 +78,11 @@ void func_ov122_020d09d0(int *self) {
                      0x80000000000LL) >> 0x20) << 4) >> 0x10) >> 4;
         VEC_Set(&dir, (int)data_0203d210[idx * 2], 0, (int)data_0203d210[idx * 2 + 1]);
         if (gap > 0x3000 || VEC_DotProduct(&dir, &aim) <= 0x800) {
-            *(char *)(*state + 0x1c7) = 4;
+            ((struct AiState *)(*state))->pendingAction = 4;
         } else if (gap <= 0xa00) {
-            *(char *)(*state + 0x1c7) = 6;
+            ((struct AiState *)(*state))->pendingAction = 6;
         } else {
-            *(char *)(*state + 0x1c7) = 7;
+            ((struct AiState *)(*state))->pendingAction = 7;
         }
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
     }

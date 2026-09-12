@@ -20,6 +20,14 @@ struct Vec3 { int x, y, z; };
 struct Placement { struct Vec3 vec; int scale; };
 struct Box { struct Vec3 min, max; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x1e0];
+    int field_390;                /* 0x390 */
+};
+
 extern const struct Vec3 data_02041dc8;
 extern unsigned short data_ov292_020d48cc[];
 
@@ -67,7 +75,7 @@ void func_ov292_020d3844(char *self)
     *(void **)(self + 0x1e0) = func_ov292_020d3dd0;
 
     *(struct Box *)(self + 0x1fc) = box;
-    *(unsigned short *)(self + 0x1ae) |= 8;
+    ((struct AiState *)(self))->flags1ae |= 8;
     {
         unsigned short *p = (unsigned short *)(self + 0x60);
         unsigned int u = *p;
@@ -97,7 +105,7 @@ void func_ov292_020d3844(char *self)
         int *slot = func_01fffca8(self + 0x144, 4, 100);
         int handle = func_ov107_020c319c(&place);
         *slot = handle;
-        *(int *)(self + 0x390) = handle;
+        ((struct AiState *)(self))->field_390 = handle;
     }
     func_0203355c(0x175);
     func_01fffc24(self + 0x394);

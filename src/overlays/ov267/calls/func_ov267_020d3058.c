@@ -35,6 +35,14 @@ typedef struct {
     int z;
 } VecFx32;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x80];
+    int field_80;                 /* 0x080 */
+    unsigned char pad084[0x143];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020cab14(int obj, int kind);
 extern void func_ov107_020c5c54(int obj, const VecFx32 *dst);
 extern void VEC_Subtract(const VecFx32 *a, const VecFx32 *b, VecFx32 *dst);
@@ -56,7 +64,7 @@ void func_ov267_020d3058(int self) {
     ctx = *(int **)(self + 4);
     *(int *)(ctx[0] + 0x5a8) = func_ov107_020cab14(ctx[0], 0);
     if (*(int *)(ctx[0] + 0x5a8) != 0) {
-        radii = *(int *)(*(int *)(ctx[0] + 0x5a8) + 0x80) + *(int *)(ctx[0] + 0x80);
+        radii = *(int *)(*(int *)(ctx[0] + 0x5a8) + 0x80) + ((struct AiState *)(ctx[0]))->field_80;
         VEC_Subtract((const VecFx32 *)(*(int *)(ctx[0] + 0x5a8) + 0x190),
                      (const VecFx32 *)(ctx[0] + 0x508), &v);
         if (func_01ff8d18(&v, &v) - radii < 0x10000 && *(int *)(ctx[0] + 0x604) > 0) {
@@ -75,12 +83,12 @@ void func_ov267_020d3058(int self) {
                 it = func_01fffd8c((void *)(ctx[0] + 0x5e4));
                 i++;
             }
-            best.y = best.y + *(int *)(ctx[0] + 0x80);
+            best.y = best.y + ((struct AiState *)(ctx[0]))->field_80;
             func_ov107_020c5c54(ctx[0], &best);
         }
     }
 
     ctx[0x1a] = 1;
-    *(signed char *)(ctx[0] + 0x1c7) = 2;
+    ((struct AiState *)(ctx[0]))->pendingAction = 2;
     func_0203c634(self, *(signed char *)(self + 0x20), 0);
 }

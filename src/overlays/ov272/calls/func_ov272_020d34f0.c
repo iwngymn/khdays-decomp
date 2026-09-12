@@ -4,6 +4,12 @@
  * of clearing it. state[1] += owner_delta; FX_Inv(state[1], 0x1000) (result unused); state[2]++ and
  * write its parity into bit1. While state[1] < 0x800 return. Once past: set bit1, hand off 0203c640.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x5c];
+    int flags5c;                  /* 0x05c */
+};
+
 extern int  FX_Inv(int x, int k);
 extern void func_0203c640(int self);
 
@@ -15,11 +21,11 @@ void func_ov272_020d34f0(int *self) {
     FX_Inv(state[1], 0x1000);
     state[2] += 1;
     q = *(int *)(*state + 0x384);
-    *(int *)(q + 0x5c) = (*(int *)(q + 0x5c) & ~2) | ((unsigned int)(state[2] << 0x1f) >> 0x1e);
+    ((struct AiState *)(q))->flags5c = (((struct AiState *)(q))->flags5c & ~2) | ((unsigned int)(state[2] << 0x1f) >> 0x1e);
     if (state[1] < 0x800) {
         return;
     }
     q = *(int *)(*state + 0x384);
-    *(int *)(q + 0x5c) |= 2;
+    ((struct AiState *)(q))->flags5c |= 2;
     func_0203c640((int)self);
 }

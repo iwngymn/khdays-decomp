@@ -3,6 +3,12 @@
  * and latch f49=1. Bail if *(obj->f4 + 0xad) is set. Clear owner->+0x1ae bit0, set
  * bit0 of owner->f3b8->+8 and f3b4->+8, func_ov107_020c9264(owner, 6, 1), reset
  * obj->f2c, dispatch via func_0203c634. owner re-read per section. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern void func_ov107_020c5af8(int owner, int a, int b, int c);
 extern void func_ov107_020c9264(int owner, int a, int b);
 extern void func_0203c634(int self, int index, void *cb);
@@ -21,7 +27,7 @@ void func_ov209_020d4348(int self) {
     if (*(unsigned char *)(*(int *)(obj + 4) + 0xad) != 0) {
         return;
     }
-    *(unsigned short *)(*(int *)obj + 0x1ae) &= ~1;
+    ((struct AiState *)(*(int *)obj))->flags1ae &= ~1;
     ((struct b8 *)(*(int *)(*(int *)obj + 0x3b8) + 8))->f |= 1;
     ((struct b8 *)(*(int *)(*(int *)obj + 0x3b4) + 8))->f |= 1;
     func_ov107_020c9264(*(int *)obj, 6, 1);

@@ -3,13 +3,19 @@
  * *(child)+0xf0. */
 struct w3 { int a, b, c; };
 struct w4 { int a, b, c, d; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+};
+
 extern void func_0202ed60(struct w4 *out, const void *in, int p);
 extern void func_0203c9d0(int a, struct w4 *b);
 extern const struct w4 data_02042258;
 void func_ov263_020d30bc(int param_1) {
     int child = *(int *)(param_1 + 4);
     struct w4 local;
-    if (*(signed char *)(*(int *)child + 0x1c6) == 1) {
+    if (((struct AiState *)(*(int *)child))->currentAction == 1) {
         func_0202ed60(&local, &data_02042258, *(int *)child + 0x390);
         func_0203c9d0(*(int *)child + 0xa0, &local);
     }

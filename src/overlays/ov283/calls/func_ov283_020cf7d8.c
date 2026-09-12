@@ -1,6 +1,12 @@
 typedef unsigned short u16;
 typedef struct { int x, y, z; } VecFx32;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+};
+
 extern int func_0203c634(int self, int idx, void *handler);
 extern void func_ov283_020cf844(int self);
 
@@ -11,8 +17,8 @@ void func_ov283_020cf7d8(int self) {
     int *node = *(int **)(self + 4);
     u16 hw;
     *(int *)(*node + 0x388) = 1;
-    hw = *(u16 *)(*node + 0x60);
-    *(u16 *)(*node + 0x60) = (hw & ~0xff00) |
+    hw = ((struct AiState *)(*node))->flags60;
+    ((struct AiState *)(*node))->flags60 = (hw & ~0xff00) |
         ((((((unsigned int)hw << 0x10) >> 0x18) | 1) << 0x18) >> 0x10);
     node[7] = 0;
     *(VecFx32 *)((char *)node + 0x20) = *(VecFx32 *)(node[1]);

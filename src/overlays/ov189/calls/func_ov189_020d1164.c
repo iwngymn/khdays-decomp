@@ -34,6 +34,14 @@
  */
 struct Vecx32 { int x, y, z; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x80];
+    int field_80;                 /* 0x080 */
+    unsigned char pad084[0x143];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 static inline void VEC_Set(struct Vecx32 *vec, int x, int y, int z) {
     vec->x = x;
     vec->y = y;
@@ -59,7 +67,7 @@ void func_ov189_020d1164(int *self) {
     state[6] += *(int *)(*self + 0x2c);
     state[2] = func_ov107_020cab14(*state, 0);
     if (state[2] == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 8), 0);
         return;
     }
@@ -69,27 +77,27 @@ void func_ov189_020d1164(int *self) {
     state[5] = func_020050b4(d.x, d.z);
     idx = (int)(((unsigned)(((long long)(int)(unsigned)state[4] * 0x28be60db9391LL +
                  0x80000000000LL) >> 0x20) << 4) >> 0x10) >> 4;
-    gap = (len - *(int *)(state[2] + 0x80)) - *(int *)(*state + 0x80);
+    gap = (len - *(int *)(state[2] + 0x80)) - ((struct AiState *)(*state))->field_80;
     VEC_Set(&v, (int)data_0203d210[idx * 2], 0, (int)data_0203d210[idx * 2 + 1]);
     func_01ffa724(0x480, &v, (void *)(state + 8));
     state[7] -= *(int *)(*self + 0x2c);
     if (state[7] <= 0) {
         state[7] = 0;
         if (gap > 0x4000) {
-            *(char *)(*state + 0x1c7) = 9;
+            ((struct AiState *)(*state))->pendingAction = 9;
             func_0203c634(self, *(signed char *)(self + 8), 0);
             return;
         }
         if (gap < 0x2000) {
-            *(char *)(*state + 0x1c7) = 6;
+            ((struct AiState *)(*state))->pendingAction = 6;
             func_0203c634(self, *(signed char *)(self + 8), 0);
             return;
         }
-        *(char *)(*state + 0x1c7) = 7;
+        ((struct AiState *)(*state))->pendingAction = 7;
         func_0203c634(self, *(signed char *)(self + 8), 0);
         return;
     }
     if (gap >= 0x800 && state[6] < 0x2000) { return; }
-    *(char *)(*state + 0x1c7) = 2;
+    ((struct AiState *)(*state))->pendingAction = 2;
     func_0203c634(self, *(signed char *)(self + 8), 0);
 }

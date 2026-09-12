@@ -35,6 +35,14 @@ typedef struct {
     unsigned short hi : 8;
 } Hw60;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1c8];
+    int field_390;                /* 0x390 */
+};
+
 extern void func_ov265_020d06bc(VecFx32 *out, int self, const VecFx32 *ref);
 extern void func_ov107_020c0b90(int owner, int effect, VecFx32 v, int a);
 extern void func_ov265_020d0628(int self);
@@ -94,8 +102,8 @@ void func_ov265_020d1e64(int self) {
     }
 
     if ((((Hw60 *)(*(int *)(ctx[0] + 0x38c) + 0x60))->lo & 1) == 0
-        || (((Hw60 *)(*(int *)(ctx[0] + 0x390) + 0x60))->lo & 1) == 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 2;
+        || (((Hw60 *)(((struct AiState *)(ctx[0]))->field_390 + 0x60))->lo & 1) == 0) {
+        ((struct AiState *)(ctx[0]))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }

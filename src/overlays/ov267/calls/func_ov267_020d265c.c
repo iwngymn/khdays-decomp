@@ -12,6 +12,17 @@
 struct hw60 { unsigned short lo : 8, hi : 8; };
 struct b8 { unsigned f : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1];
+    signed char field_1c9;        /* 0x1c9 */
+    unsigned char pad1ca[0x5a];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern int func_02023eb4(int a);
 extern void func_ov267_020d11e8(int *ctx);
 extern void func_ov107_020c9264(int a, int b, int c);
@@ -30,8 +41,8 @@ void func_ov267_020d265c(void *self) {
     ctx[0xd] = v;
     ctx[0x1a] = 0;
     ctx[3] = 0;
-    lo = *(int *)(*ctx + 0x224);
-    hi = *(int *)(*ctx + 0x228);
+    lo = ((struct AiState *)(*ctx))->field_224;
+    hi = ((struct AiState *)(*ctx))->field_228;
     d = hi - lo;
     if (d < 0) {
         d = -d;
@@ -39,11 +50,11 @@ void func_ov267_020d265c(void *self) {
     ctx[0x13] = lo + func_02023eb4(d + 1);
     *(unsigned short *)((char *)ctx + 0x58) = *(unsigned short *)(*ctx + 0x1b0);
     func_ov267_020d11e8(ctx);
-    if (*(signed char *)(*ctx + 0x1c9) != 1) {
+    if (((struct AiState *)(*ctx))->field_1c9 != 1) {
         ctx[0x1b] = 0;
         ((struct b8 *)(((int *)*ctx)[0x133] + 8))->f &= ~2;
         func_ov107_020c9264(*ctx, 4, 1);
     }
-    *(char *)(*ctx + 0x1c7) = *(signed char *)(*ctx + 0x1c9);
+    ((struct AiState *)(*ctx))->pendingAction = ((struct AiState *)(*ctx))->field_1c9;
     func_0203c634(self, *(signed char *)((char *)self + 0x20), 0);
 }

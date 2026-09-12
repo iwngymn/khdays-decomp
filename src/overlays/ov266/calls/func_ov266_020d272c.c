@@ -19,6 +19,12 @@
 struct vec3 { int x, y, z; };
 struct hw60 { unsigned short lo : 8, hi : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_ov266_020cff18(void *self, int a, int b);
 extern int VEC_Subtract(void *a, void *b, void *out);
 extern int func_020050b4(int a, int b);
@@ -48,6 +54,6 @@ void func_ov266_020d272c(void *self) {
     if (dist >= 0x2000) {
         return;
     }
-    *(char *)(*ctx + 0x1c7) = 2;
+    ((struct AiState *)(*ctx))->pendingAction = 2;
     func_0203c634(self, *(signed char *)((char *)self + 0x20), 0);
 }

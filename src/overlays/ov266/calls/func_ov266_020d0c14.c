@@ -32,6 +32,14 @@ typedef struct {
     int z;
 } VecFx32;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x80];
+    int field_80;                 /* 0x080 */
+    unsigned char pad084[0x143];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov266_020cf42c(int *ctx, int a);
 extern int func_ov266_020cf3fc(int *ctx, int a);
 extern int func_ov266_020cffbc(int self);
@@ -51,7 +59,7 @@ void func_ov266_020d0c14(int self) {
     ctx = *(int **)(self + 4);
     if (func_ov266_020cf42c(ctx, 1) != 0) {
         ctx[0x18] = func_02023eb4(2) + (gap - gap);
-        *(signed char *)(ctx[0] + 0x1c7) = 4;
+        ((struct AiState *)(ctx[0]))->pendingAction = 4;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -73,13 +81,13 @@ void func_ov266_020d0c14(int self) {
              * FIRST, which hoists the ctx[0] load above the call and parks it in a callee-saved
              * register. The ROM re-reads ctx[0] after the call. See codegen-cracks.md. */
             gap = func_01ff8d18(&v, &v);
-            gap = gap - *(int *)(*(int *)(ctx[0] + 0x5a8) + 0x80) - *(int *)(ctx[0] + 0x80);
+            gap = gap - *(int *)(*(int *)(ctx[0] + 0x5a8) + 0x80) - ((struct AiState *)(ctx[0]))->field_80;
             if (func_ov266_020cfb00(self, gap) != 0) {
                 func_0203c634(self, *(signed char *)(self + 0x20), 0);
                 return;
             }
             if (gap > 0x9800 || gap < 0x3000 || func_ov266_020cffbc(self) != 0) {
-                *(signed char *)(ctx[0] + 0x1c7) = 4;
+                ((struct AiState *)(ctx[0]))->pendingAction = 4;
                 func_0203c634(self, *(signed char *)(self + 0x20), 0);
                 return;
             }

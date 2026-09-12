@@ -9,6 +9,16 @@
  * One of three byte-identical siblings. */
 typedef struct { int x, y, z; } VecFx32;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x14c];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x1e4];
+    int field_394;                /* 0x394 */
+};
+
 extern void func_ov107_020c0b90(int obj, int a, VecFx32 v, int d);
 extern void func_ov107_020c5af8(int obj, int a, int b, int c);
 extern void func_0203c634(void *node, int idx, void *cb);
@@ -20,13 +30,13 @@ void func_ov288_020d43dc(int *node) {
     int *state = (int *)node[1];
 
     {
-        unsigned short hw60 = *(unsigned short *)(state[0] + 0x60);
-        *(unsigned short *)(state[0] + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(state[0]))->flags60;
+        ((struct AiState *)(state[0]))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 0x80) << 0x18) >> 0x10);
     }
-    *(unsigned short *)(state[0] + 0x1ae) |= 1;
+    ((struct AiState *)(state[0]))->flags1ae |= 1;
     ((struct LowByte32 *)(*(int *)(state[0] + 0x388) + 8))->bits &= ~1;
-    *(int *)(state[0] + 0x394) = 0;
+    ((struct AiState *)(state[0]))->field_394 = 0;
     func_ov107_020c0b90(state[0], 1, *(VecFx32 *)state[3], 0);
     func_ov107_020c5af8(state[0], 0x15b, 6, state[0] + 0x74);
     state[0xd] = 0;

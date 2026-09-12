@@ -1,4 +1,12 @@
 struct bf { unsigned b : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x1e0];
+    int field_390;                /* 0x390 */
+};
+
 extern int func_ov107_020cab14();
 extern void VEC_Subtract();
 extern int func_020050b4();
@@ -18,8 +26,8 @@ void func_ov244_020d2448(int *node) {
         state[5] = a;
     }
     func_ov107_020c9264(*state, 0, 0);
-    *(int *)(*state + 0x390) = 1;
-    *(unsigned short *)(*state + 0x1ae) |= 1;
+    ((struct AiState *)(*state))->field_390 = 1;
+    ((struct AiState *)(*state))->flags1ae |= 1;
     ((struct bf *)(*(int *)(*state + 0x388) + 8))->b &= ~1;
     state[17] = 0;
     func_0203c634(node, *(signed char *)(node + 8), func_ov244_020d2510);

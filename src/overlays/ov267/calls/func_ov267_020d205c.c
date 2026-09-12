@@ -1,3 +1,12 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x164];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(void *self, int idx, void *cb);
 extern void func_ov267_020d25b4(void);
 extern void func_ov267_020d2128(void);
@@ -15,8 +24,8 @@ void func_ov267_020d205c(void *self) {
     int i;
     unsigned short v;
 
-    *(char *)(*ctx + 0x1c6) = 0;
-    *(signed char *)(*ctx + 0x1c7) = -1;
+    ((struct AiState *)(*ctx))->currentAction = 0;
+    ((struct AiState *)(*ctx))->pendingAction = -1;
     for (i = 0; i < 3; i++) {
         /* 0x133 * 4 == 0x4cc: indexed off the owner base, which is what keeps the
          * scale in the load (`add r2,r2,r1,lsl #2`) instead of strength-reducing
@@ -24,8 +33,8 @@ void func_ov267_020d205c(void *self) {
         ((struct b8 *)(((int *)*ctx)[i + 0x133] + 8))->f &= ~1;
     }
     ctx[2] = *ctx + 0xb0;
-    v = *(unsigned short *)(*ctx + 0x60);
-    *(unsigned short *)(*ctx + 0x60) =
+    v = ((struct AiState *)(*ctx))->flags60;
+    ((struct AiState *)(*ctx))->flags60 =
         (unsigned short)((v & ~0xff00) | (((((unsigned int)v << 0x10) >> 0x18 | 6) << 0x18) >> 0x10));
     func_0203c634(self, 1, func_ov267_020d25b4);
     func_0203c634(self, 0, func_ov267_020d2128);

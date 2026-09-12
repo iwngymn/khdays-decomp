@@ -5,6 +5,13 @@
  * the hi byte of the +0x60 hw flags. Then register handlers 1/0/2 via 0203c634(self, slot, cb) ->
  * 020d0b48, 020d07d0, 020d0a48.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(int self, int idx, int cb);
 extern void func_ov210_020d0b48(void);
 extern void func_ov210_020d07d0(void);
@@ -15,8 +22,8 @@ void func_ov210_020d0720(int *self) {
     unsigned short *hw;
     unsigned int h;
 
-    *(char *)(*state + 0x1c6) = 0;
-    *(char *)(*state + 0x1c7) = -1;
+    ((struct AiState *)(*state))->currentAction = 0;
+    ((struct AiState *)(*state))->pendingAction = -1;
     state[1] = *state + 0xb0;
     state[2] = *state + 0x74;
     state[3] = *(int *)(*state + 0x384) + 0xad;

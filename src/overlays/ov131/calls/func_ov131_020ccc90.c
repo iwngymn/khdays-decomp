@@ -1,3 +1,12 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x16];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(int, int, void *);
 extern void func_ov131_020ccf2c(void);
 extern void func_ov131_020ccfd0(void);
@@ -18,12 +27,12 @@ void func_ov131_020ccc90(int param_1) {
     int *node = *(int **)(param_1 + 4);
     int obj = *node;
 
-    if (*(char *)(obj + 0x1c7) != -1) {
+    if (((struct AiState *)(obj))->pendingAction != -1) {
         ((struct node60 *)(obj + 0x60))->hi &= ~0xce;
-        *(unsigned short *)(*node + 0x1ae) &= ~1;
+        ((struct AiState *)(*node))->flags1ae &= ~1;
         ((struct flagword *)(*(int *)(*node + 0x388) + 8))->f8 |= 1;
-        *(char *)(*node + 0x1c6) = *(char *)(*node + 0x1c7);
-        switch (*(char *)(*node + 0x1c6)) {
+        ((struct AiState *)(*node))->currentAction = ((struct AiState *)(*node))->pendingAction;
+        switch (((struct AiState *)(*node))->currentAction) {
         case 0:  func_0203c634(param_1, 1, func_ov131_020ccf2c); break;
         case 1:  func_0203c634(param_1, 1, func_ov131_020ccfd0); break;
         case 2:  func_0203c634(param_1, 1, func_ov131_020cd1c0); break;
@@ -37,5 +46,5 @@ void func_ov131_020ccc90(int param_1) {
         case 10: func_0203c634(param_1, 1, func_ov131_020ceabc); break;
         }
     }
-    *(char *)(*node + 0x1c7) = -1;
+    ((struct AiState *)(*node))->pendingAction = -1;
 }

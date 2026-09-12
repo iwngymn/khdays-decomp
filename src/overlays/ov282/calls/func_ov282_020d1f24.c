@@ -17,6 +17,15 @@
  *    order out; every matching one has `target` last.
  */
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern int  func_ov107_020cab14(int obj, void *out);
 extern int  FX_Sqrt(int x);
 extern int  func_02023eb4(int mul);
@@ -38,16 +47,16 @@ void func_ov282_020d1f24(int *self) {
         owner = (int *)*state;
         out = FX_Sqrt(out) - *(int *)(target + 0x80) - owner[0x20];
         if (out >= 0xa000) {
-            *(char *)(*state + 0x1c7) = 5;
+            ((struct AiState *)(*state))->pendingAction = 5;
             func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
             return;
         }
     }
     {
-        int lo = *(int *)(*state + 0x224);
-        int d = *(int *)(*state + 0x228) - lo;
+        int lo = ((struct AiState *)(*state))->field_224;
+        int d = ((struct AiState *)(*state))->field_228 - lo;
         state[0x1b] = lo + func_02023eb4((d < 0 ? -d : d) + 1);
     }
-    *(char *)(*state + 0x1c7) = 2;
+    ((struct AiState *)(*state))->pendingAction = 2;
     func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
 }

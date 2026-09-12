@@ -1,3 +1,11 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1];
+    signed char field_1c9;        /* 0x1c9 */
+};
+
 extern void func_0203c634();
 
 struct hw60 { unsigned short lo : 8, hi : 8; };
@@ -8,6 +16,6 @@ void func_ov292_020d438c(int this_) {
     *(int *)(node + 0x2c) = 0;
     *(int *)(node + 0x34) = 0;
     *(int *)(node + 0x30) = 0x1000;
-    *(signed char *)(*(int *)node + 0x1c7) = *(signed char *)(*(int *)node + 0x1c9);
+    ((struct AiState *)(*(int *)node))->pendingAction = ((struct AiState *)(*(int *)node))->field_1c9;
     func_0203c634(this_, *(signed char *)(this_ + 0x20), 0);
 }

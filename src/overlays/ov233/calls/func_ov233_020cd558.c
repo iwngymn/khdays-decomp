@@ -1,14 +1,21 @@
 /* Init the multi-part reaction: reset the sub-state bytes (+0x1c6=0, +0x1c7=-1), point
  * (child)+0xc at (*child)+0xb0, raise flag 6 in the high byte at (*child)+0x60, then
  * register the three phase handlers on slots 1, 0 and 2. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_0203c634(int a, int b, void *handler);
 extern void func_ov233_020cd97c(int);
 extern void func_ov233_020cd5e8(int);
 extern void func_ov233_020cd7e8(int);
 void func_ov233_020cd558(int param_1) {
     int child = *(int *)(param_1 + 4);
-    *(signed char *)(*(int *)child + 0x1c6) = 0;
-    *(signed char *)(*(int *)child + 0x1c7) = -1;
+    ((struct AiState *)(*(int *)child))->currentAction = 0;
+    ((struct AiState *)(*(int *)child))->pendingAction = -1;
     *(int *)(child + 0xc) = *(int *)child + 0xb0;
     {
         unsigned short *p = (unsigned short *)(*(int *)child + 0x60);

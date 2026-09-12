@@ -15,6 +15,13 @@
  */
 struct q4 { int a, b, c, d; };
 struct hw60 { unsigned short lo : 8, hi : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x224];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern int  func_ov107_020cab14(int obj, int flag);
 extern void func_0203cd7c(void *out, int a, int b, void *c);
 extern void func_0202ea48(void *quat, void *mtx);
@@ -43,8 +50,8 @@ void func_ov201_020d2b20(int *self) {
     }
     ((struct hw60 *)(*state + 0x60))->hi &= ~0x80;
     func_ov107_020c9264(*state, 0, 0);
-    a = *(int *)(*state + 0x224);
-    d = *(int *)(*state + 0x228) - a;
+    a = ((struct AiState *)(*state))->field_224;
+    d = ((struct AiState *)(*state))->field_228 - a;
     if (d < 0) {
         d = -d;
     }

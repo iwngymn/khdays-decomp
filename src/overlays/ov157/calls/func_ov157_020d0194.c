@@ -1,3 +1,10 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(int obj, int slot, int cb);
 extern void func_ov157_020d0230(void);
 extern void func_ov157_020d0318(void);
@@ -8,13 +15,13 @@ extern void func_ov157_020d0318(void);
 void func_ov157_020d0194(int *this)
 {
     int node = this[1];
-    signed char pending = *(signed char *)(*(int *)node + 0x1c7);
+    signed char pending = ((struct AiState *)(*(int *)node))->pendingAction;
     if (pending == -1) {
         return;
     }
-    *(signed char *)(*(int *)node + 0x1c6) = pending;
+    ((struct AiState *)(*(int *)node))->currentAction = pending;
     *(unsigned char *)(node + 0x24) &= ~1;
-    switch (*(signed char *)(*(int *)node + 0x1c6)) {
+    switch (((struct AiState *)(*(int *)node))->currentAction) {
     case 0:
         func_0203c634((int)this, 1, (int)&func_ov157_020d0230);
         break;
@@ -22,5 +29,5 @@ void func_ov157_020d0194(int *this)
         func_0203c634((int)this, 1, (int)&func_ov157_020d0318);
         break;
     }
-    *(signed char *)(*(int *)node + 0x1c7) = -1;
+    ((struct AiState *)(*(int *)node))->pendingAction = -1;
 }

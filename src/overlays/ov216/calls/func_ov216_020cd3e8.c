@@ -1,5 +1,12 @@
 struct m1 { int m[4]; };
 struct v3 { int a, b, c; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_0203d040(int a, int b, int c, int d);
 extern void func_0202f188(void *dst, void *m, int v);
 extern void func_0203c9d0(void *dst, void *m);
@@ -21,9 +28,9 @@ void func_ov216_020cd3e8(int *node) {
     }
     if (state[0x15] != 0) {
         if (state[0x15] >= 0x23000) {
-            signed char sub = *(signed char *)(*state + 0x1c6);
+            signed char sub = ((struct AiState *)(*state))->currentAction;
             if (sub == 2 || sub == 4) {
-                *(signed char *)(*state + 0x1c7) = 5;
+                ((struct AiState *)(*state))->pendingAction = 5;
                 state[0x15] = 0;
             }
         } else {

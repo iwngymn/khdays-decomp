@@ -6,6 +6,17 @@
  * clamped to 0x1000. When the gate byte is clear the speed is pinned to 0x1000, a hold time
  * is rolled uniformly between the bounds at +0x224/+0x228, and the action byte at +0x1c7 is
  * set to 2 before re-registering the think callback. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+    unsigned char pad22c[0x164];
+    int field_390;                /* 0x390 */
+};
+
 extern int FX_Inv(int a, int b);
 extern int func_02023eb4(int scale);
 extern void func_0203c634(void *node, int idx, void *cb);
@@ -18,20 +29,20 @@ void func_ov244_020d2e74(int *node) {
 
     state[0x11] = state[0x11] + *(int *)((int)owner + 0x2c);
     v = FX_Inv(state[0x11], 0x2aa);
-    *(int *)(state[0] + 0x390) = v + 0xcc;
-    if (*(int *)(state[0] + 0x390) > 0x1000) {
-        *(int *)(state[0] + 0x390) = 0x1000;
+    ((struct AiState *)(state[0]))->field_390 = v + 0xcc;
+    if (((struct AiState *)(state[0]))->field_390 > 0x1000) {
+        ((struct AiState *)(state[0]))->field_390 = 0x1000;
     }
     if (*(unsigned char *)state[3] != 0) {
         return;
     }
-    *(int *)(state[0] + 0x390) = 0x1000;
-    lo = *(int *)(state[0] + 0x224);
-    v = *(int *)(state[0] + 0x228) - lo;
+    ((struct AiState *)(state[0]))->field_390 = 0x1000;
+    lo = ((struct AiState *)(state[0]))->field_224;
+    v = ((struct AiState *)(state[0]))->field_228 - lo;
     if (v < 0) {
         v = -v;
     }
     state[0x13] = lo + func_02023eb4(v + 1);
-    *(char *)(state[0] + 0x1c7) = 2;
+    ((struct AiState *)(state[0]))->pendingAction = 2;
     func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
 }

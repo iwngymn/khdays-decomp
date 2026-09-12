@@ -1,4 +1,13 @@
 struct bf { unsigned b : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern void func_ov191_020d0658(void *state, void *p);
 extern long long func_01ff8a14(int a, int b);
 extern void func_ov191_020d073c(void *state, int a, int b, void *p);
@@ -25,9 +34,9 @@ void func_ov191_020d1aa4(int *node) {
     }
     if (*(unsigned char *)state[1] == 0) {
         int lo, hi, d;
-        *(signed char *)(*state + 0x1c7) = 2;
-        lo = *(int *)(*state + 0x224);
-        hi = *(int *)(*state + 0x228);
+        ((struct AiState *)(*state))->pendingAction = 2;
+        lo = ((struct AiState *)(*state))->field_224;
+        hi = ((struct AiState *)(*state))->field_228;
         d = hi - lo;
         if (d < 0) d = -d;
         state[0xd] = lo + func_02023eb4(d + 1);

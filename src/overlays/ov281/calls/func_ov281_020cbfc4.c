@@ -31,6 +31,12 @@ struct Ov281Actor {
     struct Box box1fc;
 };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x5c];
+    int flags5c;                  /* 0x05c */
+};
+
 extern struct v3 data_02041dc8;
 
 extern unsigned short data_ov281_020ce48c[];
@@ -140,19 +146,19 @@ void func_ov281_020cbfc4(struct Ov281Actor *actor) {
         ((void **)self)[0xf2] = func_0203b898(func_ov107_020c9440(self, 2));
         sub = ((void **)self)[0xf2];
         func_ov107_020c9074(self, sub);
-        *(int *)((char *)sub + 0x5c) |= 2;
+        ((struct AiState *)((char *)sub))->flags5c |= 2;
 
         func_ov107_020c9074(self, sub = ((void **)self)[0xf4] =
             func_0203b898(func_ov107_020c9440(self, 3)));
-        *(int *)((char *)sub + 0x5c) |= 2;
+        ((struct AiState *)((char *)sub))->flags5c |= 2;
 
         func_ov107_020c9074(self, sub = ((void **)self)[0xf6] =
             func_0203b898(func_ov107_020c9440(self, 4)));
-        *(int *)((char *)sub + 0x5c) |= 2;
+        ((struct AiState *)((char *)sub))->flags5c |= 2;
 
         func_ov107_020c9074(self, sub = ((void **)self)[0xf8] =
             func_0203b898(func_ov107_020c9440(self, 5)));
-        *(int *)((char *)sub + 0x5c) |= 2;
+        ((struct AiState *)((char *)sub))->flags5c |= 2;
 
         g = *(struct Pose *)(self + 0x19);
         g.v = data_02041dc8;

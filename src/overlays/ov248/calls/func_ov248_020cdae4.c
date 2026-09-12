@@ -1,13 +1,19 @@
 /* c634 handler: set owner hw60 hi bit 0x40, arm func_ov248_020cd510(owner,0), then set hi
  * bits 0x80 and 0xe, set bit0 of owner+0x1ae, clear bit0 of the low byte at *(owner+0x3ac)+8,
  * clear obj[0x13], and dispatch into func_ov248_020cdbc4. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+};
+
 extern void func_ov248_020cd510(int owner, int a);
 extern void func_0203c634(int self, int index, void *cb);
 extern void func_ov248_020cdbc4(void);
 struct b8 { unsigned int b:8; };
 static inline void hw60_or(int base, unsigned int k) {
-    unsigned short v = *(unsigned short *)(base + 0x60);
-    *(unsigned short *)(base + 0x60) =
+    unsigned short v = ((struct AiState *)(base))->flags60;
+    ((struct AiState *)(base))->flags60 =
         (unsigned short)((v & ~0xff00) | (((((unsigned int)v << 0x10) >> 0x18 | k) << 0x18) >> 0x10));
 }
 void func_ov248_020cdae4(int self) {

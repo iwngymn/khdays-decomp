@@ -7,6 +7,12 @@
  * 0x10 (too far); if no target, next-state 0x10. Hand off via 0203c634 (cb=0).
  */
 struct vec3 { int x, y, z; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_ov107_020c5c54(int obj, struct vec3 *v);
 extern int  func_ov107_020cab14(int obj, int *out);
 extern void VEC_Subtract(void *a, void *b, void *c);
@@ -36,12 +42,12 @@ void func_ov210_020d1660(int *self) {
         v[1] = 0;
         dist = VEC_Mag(v);
         if (dist > 0x4000) {
-            *(char *)(*state + 0x1c7) = 7;
+            ((struct AiState *)(*state))->pendingAction = 7;
         } else {
-            *(char *)(*state + 0x1c7) = 0x10;
+            ((struct AiState *)(*state))->pendingAction = 0x10;
         }
     } else {
-        *(char *)(*state + 0x1c7) = 0x10;
+        ((struct AiState *)(*state))->pendingAction = 0x10;
     }
     func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
 }

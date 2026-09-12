@@ -6,6 +6,14 @@
  * byte goes up and the action byte becomes 1.
  *
  * Matched byte-exact 2026-07-23, first compile. One of three byte-identical siblings. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x165];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_ov107_020c5c54(int obj, void *p);
 extern int func_02023eb4(int n);
 extern void *func_01fffd70(void *list);
@@ -44,10 +52,10 @@ void func_ov288_020d5218(int *node) {
         }
     }
     {
-        unsigned short hw60 = *(unsigned short *)(state[0] + 0x60);
-        *(unsigned short *)(state[0] + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(state[0]))->flags60;
+        ((struct AiState *)(state[0]))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 1) << 0x18) >> 0x10);
     }
-    *(char *)(state[0] + 0x1c7) = 1;
+    ((struct AiState *)(state[0]))->pendingAction = 1;
     func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
 }

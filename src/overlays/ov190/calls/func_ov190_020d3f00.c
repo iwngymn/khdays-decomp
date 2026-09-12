@@ -13,6 +13,13 @@
 typedef struct { int w[11]; } Pose;
 struct Bit1 { unsigned pad0 : 1, b1 : 1; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c650(int owner, int handle);
 extern void func_ov107_020cb100(int attachment);
 extern void func_ov107_020c7ca4(char *actor);
@@ -20,12 +27,12 @@ extern void func_ov107_020c7ca4(char *actor);
 void func_ov190_020d3f00(char *actor) {
     int state;
 
-    if (*(signed char *)(actor + 0x1c6) != 6 && *(int *)(actor + 0x3d4) != 0) {
+    if (((struct AiState *)(actor))->currentAction != 6 && *(int *)(actor + 0x3d4) != 0) {
         func_0203c650(*(int *)(actor + 0x3c), *(int *)(actor + 0x3d4));
         *(int *)(actor + 0x3d4) = 0;
     }
 
-    if (*(signed char *)(actor + 0x1c6) != 9) {
+    if (((struct AiState *)(actor))->currentAction != 9) {
         if (*(int *)(actor + 0x3e4) != 0) {
             func_0203c650(*(int *)(actor + 0x3c), *(int *)(actor + 0x3e4));
             *(int *)(actor + 0x3e4) = 0;
@@ -40,9 +47,9 @@ void func_ov190_020d3f00(char *actor) {
     }
 
     if ((*(unsigned char *)(actor + 0x1c4) & 0xa) != 0) {
-        state = *(signed char *)(actor + 0x1c6);
+        state = ((struct AiState *)(actor))->currentAction;
         if (state != 0 && state != 1 && state != 3 && state != 5 && state != 0xa) {
-            *(signed char *)(actor + 0x1c7) = 5;
+            ((struct AiState *)(actor))->pendingAction = 5;
             if (*(int *)(actor + 0x3e4) != 0) {
                 func_0203c650(*(int *)(actor + 0x3c), *(int *)(actor + 0x3e4));
                 *(int *)(actor + 0x3e4) = 0;

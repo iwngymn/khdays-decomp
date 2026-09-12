@@ -1,5 +1,12 @@
 struct lobyte { unsigned int b : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(int obj, int slot, int cb);
 extern void func_ov139_020cca14(void);
 extern void func_ov139_020cc768(void);
@@ -12,8 +19,8 @@ extern void func_ov139_020cc920(void);
 void func_ov139_020cc694(int *this)
 {
     int node = this[1];
-    *(signed char *)(*(int *)node + 0x1c6) = 0;
-    *(signed char *)(*(int *)node + 0x1c7) = -1;
+    ((struct AiState *)(*(int *)node))->currentAction = 0;
+    ((struct AiState *)(*(int *)node))->pendingAction = -1;
     ((struct lobyte *)(*(int *)(*(int *)node + 0x388) + 8))->b &= ~1;
     *(int *)(node + 0x48) = *(int *)node + 0xb0;
     *(int *)(node + 0x4c) = *(int *)node + 0x74;

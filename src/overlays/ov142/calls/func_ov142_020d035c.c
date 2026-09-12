@@ -13,6 +13,12 @@
  * kind ("hi") -- a bitfield container, NOT a u32 plus a (u16) cast: the bare
  * `lsr #0x10` with no paired `lsl` is the tell.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020c89e8();
 extern void func_ov107_020c5af8(int obj, int id, unsigned short mode, int node);
 
@@ -47,10 +53,10 @@ int func_ov142_020d035c(int this, int a1, int a2)
     *(short *)(this + 0x21a) = (short)result;
 
     if ((int)*(short *)(this + 0x21a) == 0) {
-        *(char *)(*(int *)p4 + 0x1c7) = 3;
+        ((struct AiState *)(*(int *)p4))->pendingAction = 3;
     } else {
         if ((unsigned short)*(int *)a2 & 0x8000)
-            *(char *)(*(int *)p4 + 0x1c7) = 7;
+            ((struct AiState *)(*(int *)p4))->pendingAction = 7;
     }
 
     *(int *)(p4 + 0xe) = a1;

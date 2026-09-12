@@ -1,4 +1,10 @@
 struct b1 { unsigned char b : 1; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020c9f48(void *obj, int *vec);
 extern void func_0202f384(void *dst, void *mtx, int *vec);
 extern void func_01ffa724(int scale, void *v, void *out);
@@ -16,7 +22,7 @@ void func_ov141_020cd49c(char *obj) {
     func_01ffa724(0xb00, (void *)(state + 9), (void *)(state + 9));
     if (*(unsigned char *)state[0x11] == 0) {
         if (((struct b1 *)(*state + 0x17a))->b || ((struct b1 *)(*state + 0x17c))->b) {
-            *(signed char *)(*state + 0x1c7) = 2;
+            ((struct AiState *)(*state))->pendingAction = 2;
             func_0203c634(obj, *(signed char *)(obj + 0x20), (void *)0);
         }
     }

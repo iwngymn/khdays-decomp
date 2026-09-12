@@ -31,6 +31,15 @@ typedef struct {
     int useAlt : 1;
 } Owner;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x16];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(int self, int slot, void (*cb)(void));
 extern void func_ov236_020d2130(void);
 extern void func_ov236_020d21fc(void);
@@ -51,10 +60,10 @@ void func_ov236_020d1d98(int self) {
     int i;
 
     ctx = *(int **)(self + 4);
-    if (*(signed char *)(ctx[0] + 0x1c7) != -1) {
-        *(signed char *)(ctx[0] + 0x1c6) = *(signed char *)(ctx[0] + 0x1c7);
+    if (((struct AiState *)(ctx[0]))->pendingAction != -1) {
+        ((struct AiState *)(ctx[0]))->currentAction = ((struct AiState *)(ctx[0]))->pendingAction;
         ((Hw60 *)(ctx[0] + 0x60))->hi &= ~0xc6;
-        *(unsigned short *)(ctx[0] + 0x1ae) &= ~3;
+        ((struct AiState *)(ctx[0]))->flags1ae &= ~3;
 
         for (i = 0; i < 2; i++) {
             if (((Owner *)ctx[0])->useAlt) {
@@ -71,7 +80,7 @@ void func_ov236_020d1d98(int self) {
             }
         }
 
-        switch (*(signed char *)(ctx[0] + 0x1c6)) {
+        switch (((struct AiState *)(ctx[0]))->currentAction) {
         case 0:
             func_0203c634(self, 1, func_ov236_020d2130);
             break;
@@ -107,7 +116,7 @@ void func_ov236_020d1d98(int self) {
             break;
         case 8:
             /* Puts back the bit the reset just cleared -- move 8 is the one that needs it. */
-            *(unsigned short *)(ctx[0] + 0x1ae) |= 1;
+            ((struct AiState *)(ctx[0]))->flags1ae |= 1;
             func_0203c634(self, 1, func_ov236_020d2d28);
             break;
         case 12:
@@ -116,5 +125,5 @@ void func_ov236_020d1d98(int self) {
         }
     }
 
-    *(signed char *)(ctx[0] + 0x1c7) = -1;
+    ((struct AiState *)(ctx[0]))->pendingAction = -1;
 }

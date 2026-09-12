@@ -32,6 +32,15 @@ typedef struct {
     unsigned f : 8;
 } B8;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x16];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_02023eb4(int n);
 extern void func_0203c634(int self, int slot, void (*cb)(void));
 extern void func_ov256_020cd8f0(void);
@@ -54,7 +63,7 @@ void func_ov256_020cd430(int self) {
     int *ctx;
 
     ctx = *(int **)(self + 4);
-    if (*(signed char *)(ctx[0] + 0x1c7) == -1) {
+    if (((struct AiState *)(ctx[0]))->pendingAction == -1) {
         goto tail;
     }
 
@@ -81,20 +90,20 @@ void func_ov256_020cd430(int self) {
         ctx[0x12] = 0;
         *(unsigned char *)((char *)ctx + 0x68) = *(unsigned char *)((char *)ctx + 0x68) + 1;
         ctx[0x1e] = 1;
-        *(signed char *)(ctx[0] + 0x1c7) = 6;
+        ((struct AiState *)(ctx[0]))->pendingAction = 6;
     }
 
 forced:
     if (ctx[0x1f] != 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 6;
+        ((struct AiState *)(ctx[0]))->pendingAction = 6;
     }
 
-    *(signed char *)(ctx[0] + 0x1c6) = *(signed char *)(ctx[0] + 0x1c7);
+    ((struct AiState *)(ctx[0]))->currentAction = ((struct AiState *)(ctx[0]))->pendingAction;
     ((Hw60 *)(ctx[0] + 0x60))->hi &= ~0x86;
-    *(unsigned short *)(ctx[0] + 0x1ae) &= ~3;
+    ((struct AiState *)(ctx[0]))->flags1ae &= ~3;
     ((B8 *)(*(int *)(ctx[0] + 0x428) + 8))->f |= 1;
 
-    switch (*(signed char *)(ctx[0] + 0x1c6)) {
+    switch (((struct AiState *)(ctx[0]))->currentAction) {
     case 1:
         func_0203c634(self, 1, func_ov256_020cd8f0);
         break;
@@ -143,5 +152,5 @@ forced:
     }
 
 tail:
-    *(signed char *)(ctx[0] + 0x1c7) = -1;
+    ((struct AiState *)(ctx[0]))->pendingAction = -1;
 }

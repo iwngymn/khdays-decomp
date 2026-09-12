@@ -42,6 +42,20 @@
  * FX_Div in NitroSDK terms. The name is kept because the symbol table says so.
  */
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+    unsigned char pad22c[0xac];
+    int field_2d8;                /* 0x2d8 */
+    unsigned char pad2dc[0xb4];
+    int field_390;                /* 0x390 */
+    int field_394;                /* 0x394 */
+};
+
 extern int func_ov107_020cab14(int obj, int kind);
 extern void func_0203c634(int self, int slot, void (*cb)(void));
 typedef struct { int x, y, z; } Vec3;
@@ -79,7 +93,7 @@ void func_ov271_020d1048(int self) {
     ctx[2] = func_ov107_020cab14((int)owner, 0);
     target = ctx[2];
     if (target == 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 2;
+        ((struct AiState *)(ctx[0]))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -105,8 +119,8 @@ void func_ov271_020d1048(int self) {
     func_01ffa724(-fac, &dir, &ctx[3]);
     func_01ffa724(0x280, (const Vec3 *)&ctx[3], &ctx[3]);
 
-    if (gap > *(int *)(ctx[0] + 0x2d8)) {
-        *(signed char *)(ctx[0] + 0x1c7) = 2;
+    if (gap > ((struct AiState *)(ctx[0]))->field_2d8) {
+        ((struct AiState *)(ctx[0]))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -121,39 +135,39 @@ void func_ov271_020d1048(int self) {
 
         if (ctx[0x20] <= 0) {
             roll = func_02023eb4(0x65) + (gap - gap);
-            base = *(int *)(ctx[0] + 0x224);
-            span = *(int *)(ctx[0] + 0x228) - base;
+            base = ((struct AiState *)(ctx[0]))->field_224;
+            span = ((struct AiState *)(ctx[0]))->field_228 - base;
             if (span < 0) {
                 span = -span;
             }
             ctx[0x20] = base + func_02023eb4(span + 1);
 
             if (roll < 0x14
-                && func_ov271_020d23d0(*(int *)(ctx[0] + 0x390))
-                && func_ov271_020d23d0(*(int *)(ctx[0] + 0x394))
+                && func_ov271_020d23d0(((struct AiState *)(ctx[0]))->field_390)
+                && func_ov271_020d23d0(((struct AiState *)(ctx[0]))->field_394)
                 && func_ov271_020d23d0(*(int *)(ctx[0] + 0x398))) {
-                *(signed char *)(ctx[0] + 0x1c7) = 6;
+                ((struct AiState *)(ctx[0]))->pendingAction = 6;
                 func_0203c634(self, *(signed char *)(self + 0x20), 0);
                 return;
             }
             if (roll < 0x50) {
-                if (!func_ov271_020d23d0(*(int *)(ctx[0] + 0x394))) {
+                if (!func_ov271_020d23d0(((struct AiState *)(ctx[0]))->field_394)) {
                     return;
                 }
                 if (!func_ov271_020d23d0(*(int *)(ctx[0] + 0x398))) {
                     return;
                 }
-                *(signed char *)(ctx[0] + 0x1c7) = 7;
+                ((struct AiState *)(ctx[0]))->pendingAction = 7;
                 func_0203c634(self, *(signed char *)(self + 0x20), 0);
                 return;
             }
-            *(signed char *)(ctx[0] + 0x1c7) = 5;
+            ((struct AiState *)(ctx[0]))->pendingAction = 5;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
             return;
         }
 
         if (func_02023eb4(0xc9) + (gap - gap) == 0) {
-            *(signed char *)(ctx[0] + 0x1c7) = 5;
+            ((struct AiState *)(ctx[0]))->pendingAction = 5;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
             return;
         }

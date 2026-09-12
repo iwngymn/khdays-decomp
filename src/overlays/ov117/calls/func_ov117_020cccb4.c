@@ -4,6 +4,19 @@
  * func_ov117_020cc5c0 takes THREE arguments -- Ghidra shows a fourth, which is the
  * leftover in r3. Passing it costs a callee-saved register and 32 B.
  * `target = obj[1] = f(...)` in that order: the ROM stores the raw r0. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x80];
+    int field_80;                 /* 0x080 */
+    unsigned char pad084[0x143];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+    unsigned char pad22c[0xac];
+    int field_2d8;                /* 0x2d8 */
+};
+
 extern int  func_ov107_020cab14(int obj, int *out);
 extern int  FX_Sqrt(int x);
 extern int  func_02023eb4();
@@ -26,14 +39,14 @@ void func_ov117_020cccb4(int self) {
         return;
     }
     owner = *obj;
-    dist = FX_Sqrt(dist) - (*(int *)(target + 0x80) + *(int *)(owner + 0x80));
+    dist = FX_Sqrt(dist) - (*(int *)(target + 0x80) + ((struct AiState *)(owner))->field_80);
     owner = *obj;
-    if (dist > *(int *)(owner + 0x2d8)) {
+    if (dist > ((struct AiState *)(owner))->field_2d8) {
         return;
     }
     if (obj[0x10] <= 0) {
-        int lo = *(int *)(owner + 0x224);
-        int range = *(int *)(owner + 0x228) - lo;
+        int lo = ((struct AiState *)(owner))->field_224;
+        int range = ((struct AiState *)(owner))->field_228 - lo;
         if (range < 0) {
             range = -range;
         }
@@ -49,6 +62,6 @@ void func_ov117_020cccb4(int self) {
         func_01ffa724(obj[0x17], obj + 0xb, obj + 0xb);
         return;
     }
-    *(signed char *)(owner + 0x1c7) = 4;
+    ((struct AiState *)(owner))->pendingAction = 4;
     func_0203c634(self, *(signed char *)(self + 0x20), 0);
 }

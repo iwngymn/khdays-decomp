@@ -2,6 +2,12 @@
  * sub-objects at *(obj)+0x3b4 / +0x3b8: pick 9 if either sub-object is idle (bit 0 of its
  * +0x3c0/+0x3d4 flag clear AND bit 1 of the u16 at +0x1ac clear), otherwise 0xa. Dispatch NULL. */
 struct sbit0 { int b : 1; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_0203c634(int a, int b, void *handler);
 void func_ov278_020d12f0(int param_1) {
     int child = *(int *)(param_1 + 4);
@@ -11,10 +17,10 @@ void func_ov278_020d12f0(int param_1) {
     if (*(unsigned char *)(*(int *)(child + 4) + 0xad) != 0) return;
     if ((!((struct sbit0 *)(a + 0x3c0))->b && (*(unsigned short *)(a + 0x1ac) & 2) == 0) ||
         (!((struct sbit0 *)(b + 0x3d4))->b && (*(unsigned short *)(b + 0x1ac) & 2) == 0)) {
-        *(signed char *)(obj + 0x1c7) = 9;
+        ((struct AiState *)(obj))->pendingAction = 9;
         func_0203c634(param_1, *(signed char *)(param_1 + 0x20), (void *)0);
     } else {
-        *(signed char *)(obj + 0x1c7) = 0xa;
+        ((struct AiState *)(obj))->pendingAction = 0xa;
         func_0203c634(param_1, *(signed char *)(param_1 + 0x20), (void *)0);
     }
 }

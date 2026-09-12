@@ -13,6 +13,14 @@
 typedef struct { int x, y, z; } Vec3;
 struct LowByteFlags { unsigned bits : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x14c];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern void func_ov107_020c0b90(int owner, int a, Vec3 v, int b);
 extern void func_ov107_020c5af8(int owner, int a, int kind, const Vec3 *v);
 extern void func_0203c634(int *self, int action, void *cb);
@@ -22,15 +30,15 @@ void func_ov214_020ce768(int *self) {
     int *ctx = (int *)self[1];
 
     {
-        unsigned short hw60 = *(unsigned short *)(*ctx + 0x60);
-        *(unsigned short *)(*ctx + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(*ctx))->flags60;
+        ((struct AiState *)(*ctx))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 6) << 0x18) >> 0x10);
     }
-    *(unsigned short *)(*ctx + 0x1ae) |= 1;
+    ((struct AiState *)(*ctx))->flags1ae |= 1;
     ((struct LowByteFlags *)(*(int *)(*ctx + 0x3ac) + 8))->bits &= ~1;
     {
-        unsigned short hw60 = *(unsigned short *)(*ctx + 0x60);
-        *(unsigned short *)(*ctx + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(*ctx))->flags60;
+        ((struct AiState *)(*ctx))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 0x40) << 0x18) >> 0x10);
     }
 

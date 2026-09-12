@@ -15,6 +15,12 @@ typedef struct {
     int z;
 } Vec3;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern int func_ov107_020cab14(int owner, int kind);
 extern void func_0203c634(int self, int action, void (*cb)(void));
 extern void VEC_Subtract(const Vec3 *a, const Vec3 *b, Vec3 *out);
@@ -41,7 +47,7 @@ void func_ov247_020d3120(int self) {
     func_01ff8d18(&v, &v);
     ctx[4] = func_020050b4(v.x, v.z);
 
-    *(unsigned short *)(ctx[0] + 0x1ae) |= 8;
+    ((struct AiState *)(ctx[0]))->flags1ae |= 8;
     ctx[5] = *(int *)(*(int *)self + 0x2c) * 30 / 5;
     func_0203c634(self, *(signed char *)(self + 0x20), func_ov247_020d31f8);
 }

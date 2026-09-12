@@ -3,6 +3,13 @@
  * to `tst #1` and is 8 B short. The state check is four explicit `!=` comparisons, not
  * `> 1`, and both byte reads are SIGNED (ldrsb). */
 struct Hw60 { unsigned short lo : 8, hi : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c650(int a, int b);
 extern void func_ov107_020cb100();
 extern void func_ov107_020c7ca4(int self);
@@ -13,14 +20,14 @@ void func_ov148_020d01b8(int self) {
             func_0203c650(*(int *)(self + 0x3c), *(int *)(self + 0x3f4));
             *(int *)(self + 0x3f4) = 0;
         }
-        if (*(signed char *)(self + 0x1c7) == -1) {
-            signed char s = *(signed char *)(self + 0x1c6);
+        if (((struct AiState *)(self))->pendingAction == -1) {
+            signed char s = ((struct AiState *)(self))->currentAction;
             if (s != 0 && s != 1 && s != 3 && s != 6) {
                 if (*(int *)(self + 0x3ec) != 0) {
                     func_ov107_020cb100();
                     *(int *)(self + 0x3ec) = 0;
                 }
-                *(signed char *)(self + 0x1c7) = 6;
+                ((struct AiState *)(self))->pendingAction = 6;
             }
         }
     }

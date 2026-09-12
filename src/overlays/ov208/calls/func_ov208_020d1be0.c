@@ -32,6 +32,12 @@
  * 0x28be60db9391 is 65536/(2*pi) in .32, the +0x800<<32 is rounding, and the (unsigned short) cast
  * is what makes the shifts come out as lsl#4/lsr#16/asr#4. */
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov208_020d0ea4(int obj, int kind);
 extern void func_0203c634(int self, int slot, void (*cb)(void));
 extern void VEC_Subtract(const int *a, const int *b, int *dst);
@@ -62,7 +68,7 @@ void func_ov208_020d1be0(int self) {
     target = func_ov208_020d0ea4(ctx[0], 0);
     ctx[4] = target;
     if (target == 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 2;
+        ((struct AiState *)(ctx[0]))->pendingAction = 2;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -89,35 +95,35 @@ void func_ov208_020d1be0(int self) {
 
     roll = func_02023eb4(100);
     if (roll < 0x14) {
-        *(signed char *)(ctx[0] + 0x1c7) = 10;
+        ((struct AiState *)(ctx[0]))->pendingAction = 10;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
     if (roll < 0x3c) {
-        *(signed char *)(ctx[0] + 0x1c7) = 5;
+        ((struct AiState *)(ctx[0]))->pendingAction = 5;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
 
     if (gap < 0x5333) {
         if (VEC_DotProduct(toTarget, forward) > 0x800) {
-            *(signed char *)(ctx[0] + 0x1c7) = 6;
+            ((struct AiState *)(ctx[0]))->pendingAction = 6;
             func_0203c634(self, *(signed char *)(self + 0x20), 0);
         }
         return;
     }
 
     if (VEC_DotProduct(toTarget, forward) > 0x800) {
-        *(signed char *)(ctx[0] + 0x1c7) = 5;
+        ((struct AiState *)(ctx[0]))->pendingAction = 5;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
 
     if ((unsigned int)func_02023eb4(100) < 0x32) {
-        *(signed char *)(ctx[0] + 0x1c7) = 10;
+        ((struct AiState *)(ctx[0]))->pendingAction = 10;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
-    *(signed char *)(ctx[0] + 0x1c7) = 9;
+    ((struct AiState *)(ctx[0]))->pendingAction = 9;
     func_0203c634(self, *(signed char *)(self + 0x20), 0);
 }

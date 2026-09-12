@@ -11,6 +11,13 @@
  */
 typedef struct { int w[11]; } Pose;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c650(int owner, int handle);
 extern void func_ov107_020c7ca4(char *actor);
 
@@ -23,15 +30,15 @@ void func_ov269_020d1f00(char *actor) {
                           *(int *)(*(char **)(actor + 0x3d4) + 0x14));
             *(int *)(*(char **)(actor + 0x3d4) + 0x14) = 0;
         }
-        if (*(signed char *)(actor + 0x1c7) == -1) {
-            state = *(signed char *)(actor + 0x1c6);
+        if (((struct AiState *)(actor))->pendingAction == -1) {
+            state = ((struct AiState *)(actor))->currentAction;
             if (state != 0 && state != 1 && state != 3 && state != 5 && state != 9) {
-                *(signed char *)(actor + 0x1c7) = 5;
+                ((struct AiState *)(actor))->pendingAction = 5;
             }
         }
     }
 
-    if (*(signed char *)(actor + 0x1c6) != 8 &&
+    if (((struct AiState *)(actor))->currentAction != 8 &&
         *(int *)(*(char **)(actor + 0x3d4) + 0x14) != 0) {
         func_0203c650(*(int *)(actor + 0x3c),
                       *(int *)(*(char **)(actor + 0x3d4) + 0x14));

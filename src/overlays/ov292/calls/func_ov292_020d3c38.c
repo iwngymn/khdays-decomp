@@ -37,6 +37,12 @@ struct HitMsg {
 struct ImpactPair { u8 nFirst; u8 nSecond; };
 union ImpactSlot { struct ImpactPair sPair; u8 aModes[2]; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+};
+
 extern int func_ov107_020c89e8(char *actor, struct HitMsg *msg);
 extern void func_ov107_020c5af8(char *actor, int nId, u8 nMode, void *pAt);
 
@@ -91,8 +97,8 @@ int func_ov292_020d3c38(char *actor, int nSource, struct HitMsg *msg)
 
     if (*(short *)(actor + 0x21a) == 0) {
         *(u8 *)(hs->pOwner + 0x1c7) = 3;
-    } else if (!(*(signed char *)(hs->pOwner + 0x1c6) != 5 &&
-                 *(signed char *)(hs->pOwner + 0x1c6) != 6)) {
+    } else if (!(((struct AiState *)(hs->pOwner))->currentAction != 5 &&
+                 ((struct AiState *)(hs->pOwner))->currentAction != 6)) {
         *(u8 *)(hs->pOwner + 0x1c7) = 6;
     } else if ((((struct HitFlags *)msg)->lo & 0x8000) != 0) {
         *(u8 *)(hs->pOwner + 0x1c7) = 5;

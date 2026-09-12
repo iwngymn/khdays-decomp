@@ -1,5 +1,11 @@
 struct vec3 { int x, y, z; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+};
+
 extern void func_0203c9d0(int dst, int *src);
 extern int data_02041dc8;
 
@@ -9,7 +15,7 @@ extern int data_02041dc8;
 void func_ov172_020d2394(int *this)
 {
     int *node = (int *)this[1];
-    if (*(signed char *)(node[0] + 0x1c6) == 1) {
+    if (((struct AiState *)(node[0]))->currentAction == 1) {
         func_0203c9d0(node[0] + 0xa0, (int *)((int)node + 0x20));
     } else {
         *(struct vec3 *)((int)node + 0x30) = *(struct vec3 *)&data_02041dc8;

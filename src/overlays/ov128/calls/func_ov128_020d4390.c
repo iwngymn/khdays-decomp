@@ -19,6 +19,13 @@
 struct vec3 { int x, y, z; };
 struct hw60 { unsigned short lo : 8, hi : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_0203d040(int a, int b, int c, void *d);
 extern void func_0202f188(void *out, void *a, int b);
 extern void func_0202ed60(void *out, void *a, void *b);
@@ -44,7 +51,7 @@ void func_ov128_020d4390(int *self, int p2, int p3, int p4) {
     if ((((struct hw60 *)(*ctx + 0x60))->lo & 1) == 0) {
         return;
     }
-    switch (*(signed char *)(*ctx + 0x1c6)) {
+    switch (((struct AiState *)(*ctx))->currentAction) {
     case 2:
     case 4:
     case 5:
@@ -52,7 +59,7 @@ void func_ov128_020d4390(int *self, int p2, int p3, int p4) {
         t = ctx[0xf] + *(int *)(self[0] + 0x2c);
         ctx[0xf] = t;
         if (t >= 0x8000) {
-            *(char *)(*ctx + 0x1c7) = 7;
+            ((struct AiState *)(*ctx))->pendingAction = 7;
         }
         break;
     }

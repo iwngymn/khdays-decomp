@@ -7,6 +7,14 @@
  * expression: the `hi |= K` bitfield form adds a 16-bit truncation the ROM does not have.
  *
  * One of four byte-identical siblings. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x14c];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern void func_ov107_020c5af8(int obj, int a, int b, int c);
 extern void func_0203c634(void *node, int idx, void *cb);
 extern void func_ov189_020d1eb4(void);
@@ -17,15 +25,15 @@ void func_ov189_020d1df0(int *node) {
     int *state = (int *)node[1];
 
     {
-        unsigned short hw60 = *(unsigned short *)(state[0] + 0x60);
-        *(unsigned short *)(state[0] + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(state[0]))->flags60;
+        ((struct AiState *)(state[0]))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 6) << 0x18) >> 0x10);
     }
-    *(unsigned short *)(state[0] + 0x1ae) |= 1;
+    ((struct AiState *)(state[0]))->flags1ae |= 1;
     ((struct LowByte32 *)(*(int *)(state[0] + 0x388) + 8))->bits &= ~1;
     {
-        unsigned short hw60 = *(unsigned short *)(state[0] + 0x60);
-        *(unsigned short *)(state[0] + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(state[0]))->flags60;
+        ((struct AiState *)(state[0]))->flags60 =
             (hw60 & ~0xff00) | (((((unsigned int)hw60 << 0x10) >> 0x18 | 0x40) << 0x18) >> 0x10);
     }
     func_ov107_020c5af8(state[0], 0, 0x49, state[0] + 0x74);

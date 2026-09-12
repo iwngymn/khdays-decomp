@@ -38,6 +38,14 @@
 struct hw60 { unsigned short lo : 8; unsigned short hi : 8; };
 struct Vecx32 { int x, y, z; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1];
+    signed char field_1c9;        /* 0x1c9 */
+};
+
 static inline void VEC_Set(struct Vecx32 *vec, int x, int y, int z) {
     vec->x = x;
     vec->y = y;
@@ -54,7 +62,7 @@ void func_ov294_020d1f94(void *param_1) {
     if (((struct hw60 *)(node + 0x60))->lo & 1) {
         struct Vecx32 stk;
         struct Vecx32 *p;
-        *(signed char *)(node + 0x1c7) = *(signed char *)(node + 0x1c9);
+        ((struct AiState *)(node))->pendingAction = ((struct AiState *)(node))->field_1c9;
         p = (struct Vecx32 *)node_ref[1];
         VEC_Set(&stk, p->x, p->y + 0x900, p->z);
         func_ov107_020c5c54(*node_ref, &stk);

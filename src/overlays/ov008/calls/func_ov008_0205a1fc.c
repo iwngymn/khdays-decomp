@@ -24,6 +24,12 @@ typedef struct {
     char name3[0x10];
 } SceneParam;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x5c];
+    int flags5c;                  /* 0x05c */
+};
+
 extern int  func_02016f10(void *dict, void *name);
 extern void func_ov008_02059c78(int subobj);
 extern void func_ov008_02059c88(int subobj, int msg, int b, int sceneId, int chr, int slot);
@@ -37,7 +43,7 @@ void func_ov008_0205a1fc(int obj, int *pSceneId)
     unsigned int idx;
 
     if (e->name1[0] != 0) {
-        if (*(int *)(obj + 0x5c) != 0) dict = *(int *)(obj + 0x5c) + 0x40;
+        if (((struct AiState *)(obj))->flags5c != 0) dict = ((struct AiState *)(obj))->flags5c + 0x40;
         else dict = 0;
         if (dict == 0) idx = 0xffffffff;
         else idx = func_02016f10((void *)dict, e->name1);
@@ -50,7 +56,7 @@ void func_ov008_0205a1fc(int obj, int *pSceneId)
         if (*(char *)(obj + 0x1b9) != 0) *(unsigned char *)(obj + 0x1b8) |= 1;
     }
     if (e->name2[0] != 0) {
-        if (*(int *)(obj + 0x5c) != 0) dict = *(int *)(obj + 0x5c) + 0x40;
+        if (((struct AiState *)(obj))->flags5c != 0) dict = ((struct AiState *)(obj))->flags5c + 0x40;
         else dict = 0;
         if (dict == 0) idx = 0xffffffff;
         else idx = func_02016f10((void *)dict, e->name2);
@@ -63,7 +69,7 @@ void func_ov008_0205a1fc(int obj, int *pSceneId)
         if (*(char *)(obj + 0x31d) != 0) *(unsigned char *)(obj + 0x31c) |= 1;
     }
     if (e->name3[0] != 0) {
-        if (*(int *)(obj + 0x5c) != 0) dict = *(int *)(obj + 0x5c) + 0x40;
+        if (((struct AiState *)(obj))->flags5c != 0) dict = ((struct AiState *)(obj))->flags5c + 0x40;
         else dict = 0;
         if (dict == 0) idx = 0xffffffff;
         else idx = func_02016f10((void *)dict, e->name3);

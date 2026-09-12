@@ -1,3 +1,14 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1];
+    signed char field_1c9;        /* 0x1c9 */
+    unsigned char pad1ca[0x5a];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+};
+
 extern unsigned int func_02023eb4(unsigned int range);
 extern int func_ov283_020ced80(int param_1, int param_2);
 extern void func_0203c634(int *a, int i, int v);
@@ -11,8 +22,8 @@ void func_ov283_020cd170(int param_1) {
 
     if ((((struct hw60lo_020cd170 *)(obj + 0x60))->lo & 1) == 0) return;
 
-    base = *(int *)(obj + 0x224);
-    d = *(int *)(obj + 0x228) - base;
+    base = ((struct AiState *)(obj))->field_224;
+    d = ((struct AiState *)(obj))->field_228 - base;
     if (d < 0) d = -d;
     *(int *)(child + 0x4c) = base + func_02023eb4(d + 1);
     *(int *)(child + 0x54) = 0;
@@ -23,6 +34,6 @@ void func_ov283_020cd170(int param_1) {
     }
 
     obj = *(int *)child;
-    *(signed char *)(obj + 0x1c7) = *(signed char *)(obj + 0x1c9);
+    ((struct AiState *)(obj))->pendingAction = ((struct AiState *)(obj))->field_1c9;
     func_0203c634((int *)param_1, *(signed char *)(param_1 + 0x20), 0);
 }

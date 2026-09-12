@@ -5,6 +5,16 @@ typedef struct { int w[5]; } KindTable;
 typedef struct { int w[6]; } ParamBlock;
 typedef struct { VecFx32 v; int w; } SpawnSeed;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x14c];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x19];
+    signed char field_1c9;        /* 0x1c9 */
+};
+
 extern void *func_ov107_020c9440(void *self, int slot);
 extern void *func_0203b898(void *res);
 extern void func_0203bfb4(void *list, void *node);
@@ -66,9 +76,9 @@ void func_ov264_020cc1fc(char *self)
     *(int *)(self + 0x68) = 0x1400;
     *(int *)(self + 0x6c) = 0;
     *(ParamBlock *)(self + 0x1fc) = params;
-    *(char *)(self + 0x1c9) = 1;
+    ((struct AiState *)(self))->field_1c9 = 1;
     {
-        unsigned int v = *(u16 *)(self + 0x60);
+        unsigned int v = ((struct AiState *)(self))->flags60;
         unsigned int low = v & ~0xff00;
         v <<= 16;
         v >>= 24;
@@ -76,8 +86,8 @@ void func_ov264_020cc1fc(char *self)
         v <<= 24;
         v >>= 16;
         v |= low;
-        *(u16 *)(self + 0x60) = (u16)v;
-        *(u16 *)(self + 0x1ae) |= 8;
+        ((struct AiState *)(self))->flags60 = (u16)v;
+        ((struct AiState *)(self))->flags1ae |= 8;
     }
 
     {

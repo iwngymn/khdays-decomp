@@ -6,6 +6,14 @@
  * The bit-0 test is a SIGNED one-bit bitfield: that is what gives `lsl #0x1f ; asrs #0x1f`
  * instead of an `ands #1`. The hw60 clear keeps the extra `(unsigned short)` truncation in
  * the middle of the byte round-trip -- without it the two shifts at 0x10 disappear. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x165];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(void *node, int idx, void *cb);
 extern void func_ov163_020cfed8(void);
 
@@ -16,7 +24,7 @@ void func_ov163_020cfe2c(int *node) {
     int *state = (int *)node[1];
 
     if (((Ov163Bit0 *)(state[0] + 0x3cc))->b0) {
-        *(char *)(state[0] + 0x1c7) = 8;
+        ((struct AiState *)(state[0]))->pendingAction = 8;
         func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
         return;
     }
@@ -27,8 +35,8 @@ void func_ov163_020cfe2c(int *node) {
     state[0x10] = 0;
     state[0xe] = 0x1000;
     {
-        unsigned short hw60 = *(unsigned short *)(state[0] + 0x60);
-        *(unsigned short *)(state[0] + 0x60) =
+        unsigned short hw60 = ((struct AiState *)(state[0]))->flags60;
+        ((struct AiState *)(state[0]))->flags60 =
             (hw60 & ~0xff00) |
             (((unsigned int)(unsigned short)((((unsigned int)hw60 << 0x10) >> 0x18) & ~0x40) << 0x18) >> 0x10);
     }

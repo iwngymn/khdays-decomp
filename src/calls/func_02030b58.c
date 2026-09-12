@@ -15,6 +15,12 @@
  * ctx = data_0204c22c (the pool word holds the ctx pointer; used directly).
  */
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+};
+
 extern int *data_0204c22c;
 extern int func_02030788(void);
 extern void func_020314a4(unsigned int handle, unsigned int playerIndex, unsigned int bit);
@@ -40,7 +46,7 @@ void func_02030b58(unsigned char *param_1, int param_2)
     switch (m->kind) {
     case 1:
         ch = m->ch;
-        if (*(unsigned short *)((char *)ctx + ch * 2 + 0x60) == *(unsigned short *)(param_1 + 2)) {
+        if (((struct AiState *)((char *)ctx + ch * 2))->flags60 == *(unsigned short *)(param_1 + 2)) {
             if (*(int *)((char *)ctx + param_1[1] * 4 + 0xc) != 0) {
                 *(unsigned char **)((char *)ctx + 0x70) = param_1;
                 (*(void (**)(unsigned char *, unsigned int))((char *)ctx + param_1[1] * 4 + 0xc))(param_1 + 4, (param_2 - 4) & 0xff);
@@ -48,12 +54,12 @@ void func_02030b58(unsigned char *param_1, int param_2)
             ch = m->ch;
             *(unsigned short *)((char *)ctx + 0x60 + ch * 2) = *(unsigned short *)((char *)ctx + 0x60 + ch * 2) + 1;
             ch = m->ch;
-            if (*(unsigned short *)((char *)ctx + ch * 2 + 0x60) == 0xffff) {
-                *(unsigned short *)((char *)ctx + ch * 2 + 0x60) = 0;
+            if (((struct AiState *)((char *)ctx + ch * 2))->flags60 == 0xffff) {
+                ((struct AiState *)((char *)ctx + ch * 2))->flags60 = 0;
             }
         }
         ch = m->ch;
-        if (*(unsigned short *)(param_1 + 2) <= *(unsigned short *)((char *)ctx + ch * 2 + 0x60)) {
+        if (*(unsigned short *)(param_1 + 2) <= ((struct AiState *)((char *)ctx + ch * 2))->flags60) {
             msg.kind = 2;
             msg.hi = func_02030788();
             msg.mid = m->ch;

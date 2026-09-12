@@ -7,6 +7,12 @@
  */
 struct vec3 { int x, y, z; };
 struct b8 { unsigned f : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern void func_ov107_020c0b90(int obj, int mode, struct vec3 v, int flag);
 extern void func_ov107_020c5af8(int a, int b, int c, int d);
 extern void func_0203c634(int self, int idx, int cb);
@@ -21,7 +27,7 @@ void func_ov268_020d3534(int *self) {
     h = *hw;
     /* hw60.hi |= 6 -- explicit-shift form (bitfield |= adds a redundant mask) */
     *hw = h & ~0xff00 | (((((unsigned int)h << 0x10) >> 0x18 | 6) << 0x18) >> 0x10);
-    *(unsigned short *)(*state + 0x1ae) |= 1;
+    ((struct AiState *)(*state))->flags1ae |= 1;
     ((struct b8 *)(*(int *)(*state + 0x3b8) + 8))->f &= ~1;
     ((struct b8 *)(*(int *)(*state + 0x3b4) + 8))->f &= ~1;
     hw = (unsigned short *)(*state + 0x60);

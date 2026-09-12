@@ -18,6 +18,12 @@
  * manager pointer in r1 and folds the parameter spill into the load-delay slot.
  */
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x5c];
+    int flags5c;                  /* 0x05c */
+};
+
 extern volatile int data_ov002_0207fa28[];
 extern int  func_ov002_020769b0(int tag, int count, int elemSize);
 extern int  NNSi_FndAllocFromDefaultExpHeap(int size);
@@ -33,9 +39,9 @@ int func_ov002_02078e18(int sceneId)
     if (data_ov002_0207fa28[1] != 0) return sceneId;
 
     data_ov002_0207fa28[1] = func_ov002_020769b0(0x26a8, 0x5c, 0xa0);
-    *(int *)(data_ov002_0207fa28[1] + 0x5c) = NNSi_FndAllocFromDefaultExpHeap(0x18);
-    INITi_CpuClear32_0x01ff86fc(-1, *(int *)(data_ov002_0207fa28[1] + 0x5c), 0x18);
-    func_02025668(*(int *)(data_ov002_0207fa28[1] + 0x5c), 0xa0);
+    ((struct AiState *)(data_ov002_0207fa28[1]))->flags5c = NNSi_FndAllocFromDefaultExpHeap(0x18);
+    INITi_CpuClear32_0x01ff86fc(-1, ((struct AiState *)(data_ov002_0207fa28[1]))->flags5c, 0x18);
+    func_02025668(((struct AiState *)(data_ov002_0207fa28[1]))->flags5c, 0xa0);
     for (i = 0; i < 0x18; i++) {
         func_0202c594(data_ov002_0207fa28[1] + 0xb8 + i * 0x184);
     }

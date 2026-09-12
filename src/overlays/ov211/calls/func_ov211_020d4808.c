@@ -7,6 +7,12 @@
  * by factor (01ffa724). While the sub-node byte *(u8)state[3] is still set, return; once idle mark
  * *(*state+0x1c7)=2 and hand off via 0203c634 (cb=0).
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int  func_ov107_020cab14(int obj, int flag);
 extern void func_0203c634(int self, int idx, int cb);
 extern void VEC_Subtract(void *a, void *b, void *c);
@@ -25,7 +31,7 @@ void func_ov211_020d4808(int *self) {
 
     state[4] = target;
     if (target == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
@@ -39,6 +45,6 @@ void func_ov211_020d4808(int *self) {
     if (*(unsigned char *)state[3] != 0) {
         return;
     }
-    *(char *)(*state + 0x1c7) = 2;
+    ((struct AiState *)(*state))->pendingAction = 2;
     func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
 }

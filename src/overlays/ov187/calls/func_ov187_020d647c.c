@@ -1,3 +1,9 @@
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_01ffa724();
 extern int func_02023eb4();
 extern int func_0203c634();
@@ -35,7 +41,7 @@ void func_ov187_020d647c(char *a0)
             if (((Bits1 *)(r1 + 0x17c))->b0 == 0)
                 return;
         }
-        *(signed char *)(r1 + 0x1c7) = 2;
+        ((struct AiState *)(r1))->pendingAction = 2;
     }
 
     {

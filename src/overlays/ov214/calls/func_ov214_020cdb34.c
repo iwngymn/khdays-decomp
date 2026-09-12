@@ -13,6 +13,12 @@ typedef struct {
     unsigned char hasLanding : 1;
 } LandingFlag;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x80];
+    int field_80;                 /* 0x080 */
+};
+
 static inline void VEC_Set(struct Vecx32 *vec, int x, int y, int z) {
     vec->x = x;
     vec->y = y;
@@ -48,7 +54,7 @@ void func_ov214_020cdb34(int *self) {
     ((Hw60 *)(*state + 0x60))->hi &= ~0x40;
     if (((LandingFlag *)(*state + 0x17a))->hasLanding) {
         *(struct Vecx32 *)(state + 0xe) = *(struct Vecx32 *)(*state + 0x180);
-        state[0xf] -= *(int *)(*state + 0x80);
+        state[0xf] -= ((struct AiState *)(*state))->field_80;
         func_ov107_020c0b90(*state, 3, *(struct Vecx32 *)(state + 0xe), 0);
         func_ov107_020c9264(*state, 5, 0);
         func_ov107_020c5af8(*state, 0x129, 7, state + 0xe);

@@ -8,6 +8,13 @@ typedef struct { unsigned int lo : 16; unsigned int hi : 16; } EvtWord;
 #define EW(e) (((EvtWord *)(e))->lo)
 #define EH(e) (((EvtWord *)(e))->hi)
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020c89e8(void *self, unsigned int *evt);
 extern void func_ov107_020c5af8(void *self, int id, u8 kind, void *owner);
 extern void VEC_Subtract(const VecFx32 *a, const VecFx32 *b, VecFx32 *out);
@@ -46,14 +53,14 @@ int func_ov214_020ccab4(char *self, char *attacker, unsigned int *evt)
     if (*(u16 *)(self + 0x1ac) & 1) {
         return 0;
     }
-    if (*(char *)(*node + 0x1c6) != 5) {
-        if (*(char *)(*node + 0x1c6) == 6) {
+    if (((struct AiState *)(*node))->currentAction != 5) {
+        if (((struct AiState *)(*node))->currentAction == 6) {
             evt[8] = 1;
         }
     } else {
         evt[8] = 0;
     }
-    if (*(char *)(*node + 0x1c6) == 5) {
+    if (((struct AiState *)(*node))->currentAction == 5) {
         damage = 0;
     } else {
         damage = func_ov107_020c89e8(self, evt);
@@ -89,11 +96,11 @@ int func_ov214_020ccab4(char *self, char *attacker, unsigned int *evt)
         }
     }
     if (*(s16 *)(self + 0x21a) == 0) {
-        *(char *)(*node + 0x1c7) = 3;
+        ((struct AiState *)(*node))->pendingAction = 3;
         return 1;
     }
     *((u8 *)node + 0x74) = 1;
-    if (*(char *)(*node + 0x1c6) != 5) {
+    if (((struct AiState *)(*node))->currentAction != 5) {
         return 1;
     }
     if ((hurt || guard) && *((u8 *)node + 0x73) == 0) {

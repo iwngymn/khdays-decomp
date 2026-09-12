@@ -12,6 +12,12 @@
 typedef struct { int x, y, z; } VecFx32;
 typedef struct { unsigned short a, b; } Ev;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern Ev data_ov186_020d34c0[];
 extern int func_ov107_020c8eb8(int obj, void *a, void *out);
 extern void func_0203c634(void *node, int idx, void *cb);
@@ -36,7 +42,7 @@ void func_ov186_020d2d1c(int *node) {
             cb(state[0], pe, 4);
         }
         state[0x1d] = out[0];
-        *(char *)(state[0] + 0x1c7) = 7;
+        ((struct AiState *)(state[0]))->pendingAction = 7;
         func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
         return;
     }

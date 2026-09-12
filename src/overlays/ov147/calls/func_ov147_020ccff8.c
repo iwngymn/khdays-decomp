@@ -8,6 +8,16 @@ struct vec { int x, y, z; };
 typedef struct { unsigned short lo : 8, hi : 8; } Hw60;
 typedef struct { unsigned int lo : 8, rest : 24; } Byte8;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x14c];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x1e4];
+    int field_394;                /* 0x394 */
+};
+
 extern void func_ov107_020c5af8();
 extern void func_ov107_020c0b90(int owner, int mode, struct vec v, int flag);
 extern int  func_ov107_020cab14(int obj, int flag);
@@ -23,17 +33,17 @@ void func_ov147_020ccff8(int self) {
     int target;
     unsigned short w;
 
-    w = *(unsigned short *)(*obj + 0x60);
-    *(unsigned short *)(*obj + 0x60) =
+    w = ((struct AiState *)(*obj))->flags60;
+    ((struct AiState *)(*obj))->flags60 =
         (unsigned short)((w & ~0xff00)
                          | (((((unsigned int)w << 0x10) >> 0x18 | 0x80) << 0x18) >> 0x10));
     ((Hw60 *)(*obj + 0x60))->hi &= ~0xc;
-    *(unsigned short *)(*obj + 0x1ae) |= 1;
+    ((struct AiState *)(*obj))->flags1ae |= 1;
     ((Byte8 *)(*(int *)(*obj + 0x38c) + 8))->lo &= ~1;
     func_ov107_020c5af8(*obj, 0, 0x48, *obj + 0x74);
     func_ov107_020c0b90(*obj, 2, data_02041dc8, 0);
-    *(int *)(*obj + 0x394) = func_ov107_020cab14(*obj, 0);
-    target = *(int *)(*obj + 0x394);
+    ((struct AiState *)(*obj))->field_394 = func_ov107_020cab14(*obj, 0);
+    target = ((struct AiState *)(*obj))->field_394;
     if (target != 0) {
         VEC_Subtract(target + 0x74, *obj + 0x74, v);
         obj[0xe] = func_020050b4(v[0], v[2]);

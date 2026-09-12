@@ -5,6 +5,12 @@
 struct hw60 { unsigned short lo:8, hi:8; };
 struct b8 { unsigned int b:8; };
 struct vec4 { int a, b, c, d; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern int func_ov107_020cab14(int owner, int a);
 extern void func_ov185_020ce6fc(int *obj, int *out);
 extern void func_ov107_020c9264(int owner, int a, int b);
@@ -13,7 +19,7 @@ extern void func_ov185_020ceec0(void);
 void func_ov185_020cedf0(int self) {
     int *obj = *(int **)(self + 4);
     ((struct hw60 *)(*obj + 0x60))->hi &= ~0x8c;
-    *(unsigned short *)(*obj + 0x1ae) |= 1;
+    ((struct AiState *)(*obj))->flags1ae |= 1;
     ((struct b8 *)(*(int *)(*obj + 0x388) + 8))->b &= ~1;
     obj[1] = func_ov107_020cab14(*obj, 0);
     if (obj[1] != 0) {

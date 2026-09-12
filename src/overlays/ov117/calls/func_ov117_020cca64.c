@@ -10,6 +10,14 @@
 typedef struct { int x, y, z; } VecFx32;
 typedef struct { int a, b, c, d; } Ov117Quad;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1];
+    signed char field_1c9;        /* 0x1c9 */
+};
+
 extern Ov117Quad data_020420f8;
 static inline void VEC_Set(VecFx32 *v, int x, int y, int z) {
     v->x = x;
@@ -34,6 +42,6 @@ void func_ov117_020cca64(int *node) {
     { VecFx32 *p = (VecFx32 *)state[0x11];
       VEC_Set(&v, p->x, p->y + 0xa00, p->z); }
     func_ov107_020c5c54(state[0], &v);
-    *(char *)(state[0] + 0x1c7) = *(signed char *)(state[0] + 0x1c9);
+    ((struct AiState *)(state[0]))->pendingAction = ((struct AiState *)(state[0]))->field_1c9;
     func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
 }

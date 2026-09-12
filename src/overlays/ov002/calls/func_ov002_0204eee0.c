@@ -2,6 +2,12 @@ typedef struct {
     int x, y, z;
 } VecFx32;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x5c];
+    int flags5c;                  /* 0x05c */
+};
+
 extern void *NNSi_FndGetCurrentRootHeap(void);
 extern int func_01fffe14(void);
 extern void *func_01fffde0(int nPlayer);
@@ -82,7 +88,7 @@ void func_ov002_0204eee0(VecFx32 *pOutFocus, VecFx32 *pOutCamera,
         pOutFocus->z = nZ;
     }
 
-    nHeight = *(int *)((char *)pCam + 0x5c);
+    nHeight = ((struct AiState *)((char *)pCam))->flags5c;
     nRadius = FX_Sqrt(FX_Mul(nDist, nDist) - FX_Mul(nHeight, nHeight));
     if (nRadius > nDist) {
         nRadius = nDist;
@@ -96,7 +102,7 @@ void func_ov002_0204eee0(VecFx32 *pOutFocus, VecFx32 *pOutCamera,
     nEyeX = ((VecFx32 *)((char *)pCam + 0x14))->x
             + FX_Mul(data_0203d210[nIndex * 2], nRadius);
     nEyeY = ((VecFx32 *)((char *)pCam + 0x14))->y
-            + *(int *)((char *)pCam + 0x5c);
+            + ((struct AiState *)((char *)pCam))->flags5c;
     vEye.x = nEyeX;
     vEye.y = nEyeY;
     vEye.z = nEyeZ;

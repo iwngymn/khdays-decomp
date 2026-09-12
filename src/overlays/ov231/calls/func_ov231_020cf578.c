@@ -23,6 +23,14 @@ typedef struct {
     unsigned short hi : 8;
 } Hw60;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x165];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020cab14(int owner, int a);
 extern void func_0203c634(int self, int action, void *cb);
 extern void VEC_Subtract(const VecFx32 *a, const VecFx32 *b, VecFx32 *out);
@@ -39,7 +47,7 @@ void func_ov231_020cf578(int self) {
     ctx = *(int **)(self + 4);
     target = func_ov107_020cab14(ctx[0], 0);
     if (target == 0) {
-        *(signed char *)(ctx[0] + 0x1c7) = 0;
+        ((struct AiState *)(ctx[0]))->pendingAction = 0;
         func_0203c634(self, *(signed char *)(self + 0x20), 0);
         return;
     }
@@ -49,8 +57,8 @@ void func_ov231_020cf578(int self) {
     ctx[8] = 0;
     ctx[7] = 0;
 
-    v = *(unsigned short *)(ctx[0] + 0x60);
-    *(unsigned short *)(ctx[0] + 0x60) =
+    v = ((struct AiState *)(ctx[0]))->flags60;
+    ((struct AiState *)(ctx[0]))->flags60 =
         (unsigned short)((v & ~0xff00)
                          | (((((unsigned int)v << 0x10) >> 0x18 | 1) << 0x18) >> 0x10));
 

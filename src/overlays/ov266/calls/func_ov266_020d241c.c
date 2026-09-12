@@ -6,6 +6,14 @@
  * the `&= ~1` at +0x014 HAS the lsl#0x10/lsr#0x10 trunc pair -> bitfield form; the
  * `|= 0x86` at +0x054 does NOT -> explicit extract/reassemble. Same shape as
  * func_ov231_020cf578. Never infer the form from the operator. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x14c];
+    unsigned short flags1ae;      /* 0x1ae */
+};
+
 extern void func_ov107_020c5af8(int a, int b, int c, void *d);
 extern void func_ov266_020d0200(int a);
 extern void func_0203c634(void *self, int idx, void *cb);
@@ -20,9 +28,9 @@ void func_ov266_020d241c(void *self) {
     unsigned short v;
 
     ((struct hw60 *)(*ctx + 0x60))->hi &= ~1;
-    *(unsigned short *)(*ctx + 0x1ae) |= 3;
-    v = *(unsigned short *)(*ctx + 0x60);
-    *(unsigned short *)(*ctx + 0x60) =
+    ((struct AiState *)(*ctx))->flags1ae |= 3;
+    v = ((struct AiState *)(*ctx))->flags60;
+    ((struct AiState *)(*ctx))->flags60 =
         (unsigned short)((v & ~0xff00) | (((((unsigned int)v << 0x10) >> 0x18 | 0x86) << 0x18) >> 0x10));
     for (; i < 3; i++) {
         ((struct b8 *)(((int *)*ctx)[i + 0x133] + 8))->f &= ~1;

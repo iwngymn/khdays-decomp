@@ -1,5 +1,12 @@
 struct bf { unsigned b : 8; };
 struct hw60 { unsigned short lo : 8, hi : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0203c634(void *obj, int idx, void *value);
 extern void func_ov234_020ccedc(void);
 extern void func_ov234_020ccf4c(void);
@@ -8,14 +15,14 @@ extern void func_ov234_020cd0d4(void);
 
 void func_ov234_020cc95c(int *node) {
     int *state = (int *)node[1];
-    int c = *(signed char *)(*state + 0x1c7);
+    int c = ((struct AiState *)(*state))->pendingAction;
     if (c != -1) {
-        *(signed char *)(*state + 0x1c6) = (signed char)c;
+        ((struct AiState *)(*state))->currentAction = (signed char)c;
         ((struct hw60 *)(*state + 0x60))->hi &= ~0xc6;
         ((struct bf *)(*(int *)(*state + 0x388) + 8))->b |= 1;
         { unsigned short *p = (unsigned short *)(*state + 0x60); unsigned int u = *p;
           *p = (unsigned short)((u & ~0xff00) | ((((u << 0x10) >> 0x18 | 0x40) << 0x18) >> 0x10)); }
-        switch (*(signed char *)(*state + 0x1c6)) {
+        switch (((struct AiState *)(*state))->currentAction) {
         case 0:
             func_0203c634(node, 1, func_ov234_020ccedc);
             break;
@@ -30,5 +37,5 @@ void func_ov234_020cc95c(int *node) {
             break;
         }
     }
-    *(signed char *)(*state + 0x1c7) = -1;
+    ((struct AiState *)(*state))->pendingAction = -1;
 }

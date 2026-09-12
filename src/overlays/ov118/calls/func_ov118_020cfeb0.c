@@ -14,6 +14,14 @@
  * conversion in the argument-passing sequence instead of in an expression, so it is emitted twice
  * and `mode` stays live across the first call. A cast you write twice can still be CSEd; a
  * PROTOTYPE conversion cannot. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    unsigned char pad1c7[0x1c9];
+    int field_390;                /* 0x390 */
+};
+
 extern int  func_0203be68();
 extern void func_0203be9c();
 extern void func_0203babc();
@@ -31,7 +39,7 @@ void func_ov118_020cfeb0(int self, int mode, int arg) {
         func_0203b9fc(*(int *)(self + 0x384), 0, mode, arg);
         func_0203b9fc(*(int *)(self + 0x384), 3, mode, arg);
     }
-    if (*(int *)(self + 0x390) != 0 && *(signed char *)(self + 0x1c6) != 7) {
+    if (((struct AiState *)(self))->field_390 != 0 && ((struct AiState *)(self))->currentAction != 7) {
         func_ov118_020cfe08(self);
     }
     func_0203c7ac(*(int *)(self + 0x384), 0);

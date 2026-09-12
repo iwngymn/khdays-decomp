@@ -3,14 +3,22 @@
  * *(*child+0x38c)+8, clear +0x2c and register the handler. */
 struct hw60 { unsigned short lo : 8; unsigned short hi : 8; };
 struct b8 { unsigned int f : 8; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x1e0];
+    int field_390;                /* 0x390 */
+};
+
 extern int func_0203c634(int a, int b, void *handler);
 extern void func_ov277_020cdb54(int);
 void func_ov277_020cdabc(int param_1) {
     int child = *(int *)(param_1 + 4);
     *(int *)(child + 0x14) = 0;
-    *(int *)(*(int *)child + 0x390) = 0;
+    ((struct AiState *)(*(int *)child))->field_390 = 0;
     ((struct hw60 *)(*(int *)child + 0x60))->hi &= ~0x9c;
-    *(unsigned short *)(*(int *)child + 0x1ae) &= ~3;
+    ((struct AiState *)(*(int *)child))->flags1ae &= ~3;
     ((struct b8 *)(*(int *)(*(int *)child + 0x38c) + 8))->f |= 1;
     *(int *)(child + 0x2c) = 0;
     func_0203c634(param_1, *(signed char *)(param_1 + 0x20), (void *)&func_ov277_020cdb54);

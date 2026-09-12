@@ -39,6 +39,17 @@
  * Ruled out: the `+ (v - v)` RNG artifact (identical either way here), a local for the RNG
  * result (+4 B), writing the body as the positive case (112 bytes -- much worse), and caching
  * *obj in a local (no change). Measured with tools/bytedist.py. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x5c];
+    int field_224;                /* 0x224 */
+    int field_228;                /* 0x228 */
+    unsigned char pad22c[0x168];
+    int field_394;                /* 0x394 */
+};
+
 extern int  func_ov107_020cab14(int obj, int flag);
 extern void func_0203c634(int self, int index, void *cb);
 extern void func_ov107_020c9264(int owner, int mode, int arg);
@@ -51,21 +62,21 @@ void func_ov197_020cd3c0(int *self) {
     int *obj = (int *)self[1];
     int lo, range;
 
-    *(int *)(*obj + 0x394) = func_ov107_020cab14(*obj, 0);
-    if (*(int *)(*obj + 0x394) == 0) {
-        *(signed char *)(*obj + 0x1c7) = 2;
+    ((struct AiState *)(*obj))->field_394 = func_ov107_020cab14(*obj, 0);
+    if (((struct AiState *)(*obj))->field_394 == 0) {
+        ((struct AiState *)(*obj))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
     func_ov107_020c9264(*obj, 2, 0);
     func_ov197_020cc9b4(*obj, 0);
     obj[0xf] = *(int *)(self[0] + 0x2c) * 0x1e / 10;
-    lo = *(int *)(*obj + 0x224);
-    range = *(int *)(*obj + 0x228) - lo;
+    lo = ((struct AiState *)(*obj))->field_224;
+    range = ((struct AiState *)(*obj))->field_228 - lo;
     if (range < 0) {
         range = -range;
     }
     obj[0x10] = lo + func_02023eb4(range + 1);
-    VEC_Subtract(*(int *)(*obj + 0x394) + 400, obj[3], obj + 10);
+    VEC_Subtract(((struct AiState *)(*obj))->field_394 + 400, obj[3], obj + 10);
     func_0203c634((int)self, *(signed char *)((int)self + 0x20), &func_ov197_020cd498);
 }

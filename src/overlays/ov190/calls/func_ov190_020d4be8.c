@@ -18,6 +18,12 @@
  *    likewise.
  * The state byte is `char` (strb), the counter test is `> 0`.
  */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020cab14(int obj, int out);
 extern void func_0203c634(int self, int idx, int cb);
 extern void VEC_Subtract(void *a, void *b, void *d);
@@ -36,7 +42,7 @@ void func_ov190_020d4be8(int *self) {
     target = func_ov107_020cab14(*state, 0);
     state[2] = target;
     if (target == 0) {
-        *(char *)(*state + 0x1c7) = 2;
+        ((struct AiState *)(*state))->pendingAction = 2;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
@@ -44,7 +50,7 @@ void func_ov190_020d4be8(int *self) {
     dist = func_01ff8d18(aim, aim);
     state[5] = func_020050b4(aim[0], aim[2]);
     if (dist > 0x4000) {
-        *(char *)(*state + 0x1c7) = 4;
+        ((struct AiState *)(*state))->pendingAction = 4;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
@@ -56,15 +62,15 @@ void func_ov190_020d4be8(int *self) {
     state[7] = 0;
     roll = func_02023eb4(0x65) + (dist - dist);
     if (roll < 0x32) {
-        *(char *)(*state + 0x1c7) = 9;
+        ((struct AiState *)(*state))->pendingAction = 9;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
     if (dist < 0x2000) {
-        *(char *)(*state + 0x1c7) = 6;
+        ((struct AiState *)(*state))->pendingAction = 6;
         func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
         return;
     }
-    *(char *)(*state + 0x1c7) = 7;
+    ((struct AiState *)(*state))->pendingAction = 7;
     func_0203c634((int)self, *(signed char *)((int)self + 0x20), 0);
 }

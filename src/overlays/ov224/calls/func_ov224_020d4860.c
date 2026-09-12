@@ -41,6 +41,14 @@ typedef struct {
     u32 rest : 24;
 } FlagsW;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+    unsigned char pad062[0x32e];
+    int field_390;                /* 0x390 */
+};
+
 extern void func_ov107_020c4ecc(int obj);
 extern int func_02023eb4();
 extern void func_0203c634(int self, int slot, void *cb);
@@ -54,15 +62,15 @@ void func_ov224_020d4860(int self) {
 
     ctx = *(int **)(self + 4);
 
-    v = *(u16 *)(ctx[0] + 0x60);
-    *(u16 *)(ctx[0] + 0x60) =
+    v = ((struct AiState *)(ctx[0]))->flags60;
+    ((struct AiState *)(ctx[0]))->flags60 =
         (u16)((v & ~0xff00) | (((((u32)v << 0x10) >> 0x18 | 1) << 0x18) >> 0x10));
 
     p = *(int *)(ctx[0] + 0x388);
     ((FlagsW *)(p + 8))->lo |= 1;
 
     ctx[0x11] = 0;
-    *(VecFx32 *)&ctx[3] = *(VecFx32 *)(*(int *)(ctx[0] + 0x390) + 0x74);
+    *(VecFx32 *)&ctx[3] = *(VecFx32 *)(((struct AiState *)(ctx[0]))->field_390 + 0x74);
     *(signed char *)((int)ctx + 0x64) = 0;
 
     switch (ctx[0x16]) {

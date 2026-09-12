@@ -14,6 +14,12 @@ struct bit0 { unsigned char b : 1; };
 typedef struct { unsigned short a, b; } Pair;
 struct hw60 { unsigned short lo : 8, hi : 8; };
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern int func_ov107_020c8eb8(int owner, int src, Vec4 *out);
 extern void func_0203c634(int *self, int action, void *cb);
 extern void func_ov117_020cd594(void);
@@ -36,7 +42,7 @@ void func_ov117_020cd494(int *self) {
             cb(*ctx, pp, 4);
         }
         ctx[0x1d] = out.w[0];
-        *(signed char *)(*ctx + 0x1c7) = 7;
+        ((struct AiState *)(*ctx))->pendingAction = 7;
         func_0203c634(self, *(signed char *)((char *)self + 0x20), 0);
         return;
     }

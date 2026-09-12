@@ -6,6 +6,13 @@
  * pointer where that one stores a null. */
 struct bf { unsigned b : 8; };
 struct blk16 { int a, b, c, d; };
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c6];
+    signed char currentAction;    /* 0x1c6 */
+    signed char pendingAction;    /* 0x1c7 */
+};
+
 extern void func_0202ea34(void *p, int a, int b, int c, int d);
 extern void func_0203c634(void *obj, int idx, void *value);
 extern void func_ov292_020d4124(void);
@@ -13,8 +20,8 @@ extern void func_ov292_020d4324(void);
 extern void func_ov292_020d42b8(void);
 void func_ov292_020d4030(int *node) {
     int *state = (int *)node[1];
-    *(signed char *)(*state + 0x1c6) = 0;
-    *(signed char *)(*state + 0x1c7) = 0xff;
+    ((struct AiState *)(*state))->currentAction = 0;
+    ((struct AiState *)(*state))->pendingAction = 0xff;
     ((struct bf *)(*(int *)(*state + 0x388) + 8))->b &= ~1;
     state[2] = *state + 0xb0;
     state[3] = *state + 0x74;
