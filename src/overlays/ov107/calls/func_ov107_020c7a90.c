@@ -30,6 +30,14 @@ typedef struct {
     unsigned int flags : 8;
 } ListItem;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1ae];
+    unsigned short flags1ae;      /* 0x1ae */
+    unsigned char pad1b0[0x16];
+    signed char currentAction;    /* 0x1c6 */
+};
+
 extern void MI_CpuFill8(void *dst, int value, int size);
 extern int func_01fffd70(void *listObj);
 extern int func_01fffd8c(int *listObj);
@@ -45,7 +53,7 @@ void func_ov107_020c7a90(int self, Msg *msg, int arg3)
             return;
         }
 
-        msg->field_1e = *(u16 *)(self + 0x1ae);
+        msg->field_1e = ((struct AiState *)(self))->flags1ae;
         MI_CpuFill8(&msg->field_20, 0, 2);
 
         i = 0;
@@ -64,7 +72,7 @@ void func_ov107_020c7a90(int self, Msg *msg, int arg3)
         }
 
         msg->field_22 = *(s16 *)(self + 0x21a);
-        msg->field_05 = *(s8 *)(self + 0x1c6);
+        msg->field_05 = ((struct AiState *)(self))->currentAction;
         msg->field_1d = *(u8 *)(self + 0x1c5);
     }
 

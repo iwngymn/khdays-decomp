@@ -4,6 +4,14 @@
  * and switch to action 7.
  *
  * Matched byte-exact 2026-07-23, first compile. One of three byte-identical siblings. */
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x1c7];
+    signed char pendingAction;    /* 0x1c7 */
+    unsigned char pad1c8[0x1c8];
+    int field_390;                /* 0x390 */
+};
+
 extern int FX_Inv(int a, int b);
 extern void func_0203c634(void *node, int idx, void *cb);
 
@@ -13,15 +21,15 @@ void func_ov114_020cd2ec(int *node) {
 
     state[0x11] = state[0x11] + *(int *)((int)owner + 0x2c);
     if (state[0x11] >= 0x400) {
-        *(int *)(state[0] + 0x390) = 0x1000 - FX_Inv(state[0x11] - 0x400, 0x2aa);
-        if (*(int *)(state[0] + 0x390) < 0xcc) {
-            *(int *)(state[0] + 0x390) = 0xcc;
+        ((struct AiState *)(state[0]))->field_390 = 0x1000 - FX_Inv(state[0x11] - 0x400, 0x2aa);
+        if (((struct AiState *)(state[0]))->field_390 < 0xcc) {
+            ((struct AiState *)(state[0]))->field_390 = 0xcc;
         }
     }
     if (*(unsigned char *)state[3] != 0) {
         return;
     }
-    *(int *)(state[0] + 0x390) = 0xcc;
-    *(char *)(state[0] + 0x1c7) = 7;
+    ((struct AiState *)(state[0]))->field_390 = 0xcc;
+    ((struct AiState *)(state[0]))->pendingAction = 7;
     func_0203c634(node, *(signed char *)((int)node + 0x20), 0);
 }

@@ -12,6 +12,12 @@ typedef struct {
     signed trackPos : 1;
 } HitFlags;
 
+/* Partial AiState, fields from STRUCTS.md; pads are not claims about the object. */
+struct AiState {
+    unsigned char pad000[0x60];
+    unsigned short flags60;       /* 0x060 */
+};
+
 extern void func_0203ca30(void *dst, const void *src);
 extern void func_0202f188(int *quat, int *axis, int angle);
 extern int func_0203c9d0(void *dst, void *src);
@@ -30,17 +36,17 @@ void func_ov107_020c49b8(int self, u8 *msg) {
     int hitTarget;
 
     if (msg[2] == 0) {
-        flags = *(u16 *)(self + 0x60);
+        flags = ((struct AiState *)(self))->flags60;
         flags = (u16)((flags & ~0xff) | msg[4]);
-        *(u16 *)(self + 0x60) = flags;
+        ((struct AiState *)(self))->flags60 = flags;
 
         owner = *(int *)(self + 0x9c);
         if (owner != 0) {
-            unsigned int b = (unsigned int)(*(u16 *)(self + 0x60) << 24) >> 24;
+            unsigned int b = (unsigned int)(((struct AiState *)(self))->flags60 << 24) >> 24;
             ((Bits2 *)(owner + 0x5c))->bit1 = (b & 0x80) ? 1 : 0;
         }
 
-        if (!((unsigned int)(*(u16 *)(self + 0x60) << 24) >> 24 & 1)) {
+        if (!((unsigned int)(((struct AiState *)(self))->flags60 << 24) >> 24 & 1)) {
             return;
         }
 
