@@ -136,7 +136,7 @@ def source_rule(source):
     raise ValueError(f"unsupported reconstructed source type: {source}")
 
 
-def emit_ninja(ninja_path: Path, src_files, modes=None):
+def emit_ninja(ninja_path: Path, src_files):
     """Write build.ninja with compile + link rules for the prototype scope.
 
     All paths are relative to ROOT so ninja (invoked from ROOT) doesn't have
@@ -149,12 +149,12 @@ def emit_ninja(ninja_path: Path, src_files, modes=None):
         f"python = {py}",
         "",
         "rule mwcc",
-        # $mode carries -thumb for the files that need it. It used to come from
-        # build/file_modes.json, declared as an implicit dep on every compile
-        # edge -- so adding one function rewrote that file and invalidated all
-        # 20,000 objects. On the command line instead, ninja's own hash
-        # rebuilds exactly the file whose mode changed.
-        "  command = $python tools/_run_mwcc.py $out $in $mode",
+        # The per-file ARM/THUMB mode and compiler override travel on the command
+        # line as $mode / $cc (ninja recompiles a file when its command changes),
+        # instead of an implicit dep on file_modes.json: that file changes every
+        # time a function is matched (a new entry), which rebuilt all ~20k objects
+        # per gate (2026-09-12).
+        "  command = $python tools/_run_mwcc.py $out $in --mode=$mode --cc=$cc",
         "  description = MWCC $in",
         "  restat = 1",
         "",
@@ -172,25 +172,23 @@ def emit_ninja(ninja_path: Path, src_files, modes=None):
     ]
 
     compiled_objs = []
-    modes = modes or {}
-    compilers_dep = rel(BUILD / "file_compilers.json")
+    modes_path = BUILD / "file_modes.json"
+    modes = json.loads(modes_path.read_text(encoding="utf-8")) if modes_path.exists() else {}
+    comp_path = BUILD / "file_compilers.json"
+    cmap = json.loads(comp_path.read_text(encoding="utf-8")) if comp_path.exists() else {}
     for src in src_files:
         # Match objdiff.json's expected base_path layout.
         obj_path = COMPILE_OUT / Path(src).with_suffix(".o")
         obj_path.parent.mkdir(parents=True, exist_ok=True)
         obj = rel(obj_path)
         compiled_objs.append(obj)
-        # file_compilers.json stays an implicit dep: it is a handful of
-        # entries and only changes when a translation unit moves to another
-        # compiler version, so invalidating everything is the right answer.
+        # The ARM/THUMB mode and the compiler override are baked into the
+        # command line, so a flip of either recompiles exactly that file.
         rule = source_rule(src)
         if rule == "mwcc":
-            lines.append(f"build {obj}: mwcc {src} | {compilers_dep}")
-            # ALWAYS emit a token. An empty $mode expands to a trailing space,
-            # which CreateProcess and Python's argv parser both drop, so the
-            # script would see argv of length 3 and fall back to the JSON --
-            # silently undoing this for every ARM edge.
-            lines.append("  mode = %s" % modes.get(src.replace("\\", "/"), "arm"))
+            lines.append(f"build {obj}: mwcc {src}")
+            lines.append(f"  mode = {modes.get(src, 'arm')}")
+            lines.append(f"  cc = {cmap.get(src) or 'default'}")
         else:
             lines.append(f"build {obj}: armasm {src}")
 
@@ -368,11 +366,7 @@ def main():
     print("[configure] stage delinked .o files into build/link/")
     stage_delinked_objects(LINK, {Path(s).with_suffix(".o").name for s in src_files})
 
-    modes_now = {}
-    mp = BUILD / "file_modes.json"
-    if mp.is_file():
-        modes_now = json.loads(mp.read_text(encoding="utf-8"))
-    emit_ninja(ROOT / "build.ninja", src_files, modes_now)
+    emit_ninja(ROOT / "build.ninja", src_files)
     print("[configure] wrote build.ninja")
 
 

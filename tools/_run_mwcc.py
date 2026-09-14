@@ -42,19 +42,25 @@ out_path = Path(sys.argv[1])
 src_path = Path(sys.argv[2])
 rel = src_path.resolve().relative_to(ROOT).as_posix()
 
-# Thumb/ARM mode. configure.py puts -thumb straight on the ninja command line
-# for the files that need it, so the common path reads nothing from disk. It
-# used to load build/file_modes.json here -- a 20,000-entry map parsed once per
-# translation unit, to look up a single key. The map is still the fallback for
-# anyone invoking this script by hand.
-mode = sys.argv[3] if len(sys.argv) > 3 else None
-if mode in ("arm", "thumb"):
-    extra = ["-thumb"] if mode == "thumb" else []
-else:
-    # No token: someone ran this by hand. Fall back to the map.
-    modes_path = ROOT / "build" / "file_modes.json"
-    extra = ["-thumb"] if (modes_path.exists()
-                           and load_json_retry(modes_path).get(rel) == "thumb") else []
+# The mode and compiler override arrive on the command line from build.ninja
+# (--mode=arm|thumb, --cc=default|<mwccarm dir>); without them (a direct call)
+# fall back to the sidecar maps gen_delinks.py / configure.py produce.
+opt_mode = None
+opt_cc = None
+for a in sys.argv[3:]:
+    if a.startswith("--mode="):
+        opt_mode = a[len("--mode="):]
+    elif a.startswith("--cc="):
+        opt_cc = a[len("--cc="):]
+modes_path = ROOT / "build" / "file_modes.json"
+extra = []
+if opt_mode is not None:
+    if opt_mode == "thumb":
+        extra.append("-thumb")
+elif modes_path.exists():
+    modes = load_json_retry(modes_path)
+    if modes.get(rel) == "thumb":
+        extra.append("-thumb")
 
 # Per-file compiler override: a few translation units are precompiled middleware
 # built with an older CodeWarrior (e.g. the ov028 anti-tamper crypto core, which
@@ -62,7 +68,10 @@ else:
 # mapping such source files to a tools/mwccarm/<ver> directory.
 mwcc_bin = MWCCARM
 comp_path = ROOT / "build" / "file_compilers.json"
-if comp_path.exists():
+if opt_cc is not None:
+    if opt_cc != "default":
+        mwcc_bin = ROOT / "tools" / "mwccarm" / opt_cc / "mwccarm.exe"
+elif comp_path.exists():
     cmap = load_json_retry(comp_path)
     ver = cmap.get(rel)
     if ver:
@@ -95,6 +104,12 @@ for attempt in range(8):
         sys.path.insert(0, str(ROOT / "tools"))
         from reorder_data_sections import reorder
         reorder(out_path)
+        # A function file that DEFINES its module's zero-initialised globals to
+        # reproduce the ROM's .bss-relative code (ov011) hands the definitions
+        # back to the module's delinked bss object; see tools/share_bss.py.
+        from share_bss import share, wants_sharing
+        if wants_sharing(src_path):
+            share(out_path)
         sys.exit(0)
     time.sleep(0.25 * (attempt + 1))
 

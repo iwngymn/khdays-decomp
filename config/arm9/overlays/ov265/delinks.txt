@@ -96,6 +96,10 @@ src/overlays/ov265/calls/func_ov265_020d18e4.c:
     complete
     .text       start:0x020d18e4 end:0x020d1990
 
+src/overlays/ov265/calls/func_ov265_020d1990.c:
+    complete
+    .text       start:0x020d1990 end:0x020d1c50
+
 src/overlays/ov265/calls/func_ov265_020d1c50.c:
     complete
     .text       start:0x020d1c50 end:0x020d1d60
@@ -211,6 +215,10 @@ src/overlays/ov265/calls/func_ov265_020d3198.c:
 src/overlays/ov265/calls/func_ov265_020d31d0.c:
     complete
     .text       start:0x020d31d0 end:0x020d32c4
+
+src/overlays/ov265/calls/func_ov265_020d32c4.c:
+    complete
+    .text       start:0x020d32c4 end:0x020d3668
 
 src/overlays/ov265/data/ov265_strings_020d36c0.c:
     complete
