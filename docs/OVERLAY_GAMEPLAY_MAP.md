@@ -1,6 +1,6 @@
 # Overlay gameplay map
 
-Snapshot taken 2026-09-11 from [PROGRESS.md](../PROGRESS.md). Treat every percentage here as a dated snapshot and PROGRESS.md as authoritative. All 298 listed modules are included. These percentages measure functions reconstructed in matching C, not gameplay understood, code size, or difficulty. This is a documentation snapshot, not a new ROM verification; use PROGRESS.md for current counts.
+Snapshot taken 2026-09-13 from [PROGRESS.md](../PROGRESS.md). Treat every percentage here as a dated snapshot and PROGRESS.md as authoritative. All 298 listed modules are included. These percentages measure functions reconstructed in matching C, not gameplay understood, code size, or difficulty. This is a documentation snapshot, not a new ROM verification; use PROGRESS.md for current counts.
 
 “Outside C” = total functions minus C-matched functions. This includes assembly and library identifications; it is not a promise that all remaining functions should become C. A 100% row can still have unknown names and unrecovered data.
 
@@ -49,7 +49,7 @@ When refreshing the numeric snapshot, copy all module rows from PROGRESS.md, rec
 | ov019 | 100.0% | 0 | Panel slot 2 of 14 in the ov002 panel table. | No identifying text recovered in the scanned string files. ([source data](../src/overlays/ov019/data/)) |
 | ov020 | 100.0% | 0 | References wall boundaries and up/down labels; exact object unknown. Panel slot 4 of 14 in the ov002 panel table. | `col_wall`, `col_wall10`, `col_wall09`, `up` ([source data](../src/overlays/ov020/data/)) |
 | ov021 | 51.6% | 15 | Object timer and scale updates observed; exact object unknown. Panel slot 12 of 14 in the ov002 panel table. | No identifying text recovered in the scanned string files. |
-| ov022 | 88.1% | 90 | Shared battle/character machinery, pause handling and combat effects. | `ef_wind_B01\0`, `\0`, `Please Entry ScriptName`, `ba/ef/ta.p.z` ([source data](../src/overlays/ov022/data/)) |
+| ov022 | 93.1% | 52 | Shared battle/character machinery, pause handling and combat effects. | `ef_wind_B01\0`, `\0`, `Please Entry ScriptName`, `ba/ef/ta.p.z` ([source data](../src/overlays/ov022/data/)) |
 | ov023 | 58.0% | 94 | Story-event/staged-scene resources and cameras; likely event handling. | `AW`, `NM`, `PI`, `TT` ([source data](../src/overlays/ov023/data/)) |
 | ov024 | 95.8% | 5 | MobiClip video playback/decoding. | `/text/font_eu_10all.nftr`, `mobiclip_intr` ([source data](../src/overlays/ov024/data/)) |
 | ov025 | 74.8% | 253 | Large camp-menu/panel/save collection; exact distinction from ov008 unknown. | `ro_w_tg_R`, `Dummy09`, `Dummy01`, `Dummy08` ([source data](../src/overlays/ov025/data/)) |
@@ -134,7 +134,7 @@ When refreshing the numeric snapshot, copy all module rows from PROGRESS.md, rec
 | ov104 | 69.0% | 9 | Roxas-specific character support: animation/weapon/effect resources. Character roster: group 19, memory slot 3 of 4 (this group has 4 slots). | `roxas_tg`, `roxas_R`, `ro_h_L`, `ro_h_R` ([source data](../src/overlays/ov104/data/)) |
 | ov105 | 49.1% | 54 | Exact role not established. | No identifying text recovered in the scanned string files. |
 | ov106 | 42.0% | 29 | Participates in multiplayer-session handling; also has event/display resources. | `dual3d_update`, `ev/EV_DP.p2`, `/UI/hcnt/arc_&`, `ba/ef/mi_&.p.z` ([source data](../src/overlays/ov106/data/)) |
-| ov107 | 79.8% | 39 | Shared creature/combat support, called for damage, targeting and reactions. | `Ms/BL.bin`, `Ms/UP.bin`, `ba/ef/s_burn.p.z`, `ba/ef/s_frost.p.z` ([source data](../src/overlays/ov107/data/)) |
+| ov107 | 100.0% | 0 | Shared creature/combat support, called for damage, targeting and reactions. | `Ms/BL.bin`, `Ms/UP.bin`, `ba/ef/s_burn.p.z`, `ba/ef/s_frost.p.z` ([source data](../src/overlays/ov107/data/)) |
 | ov114 | 76.7% | 10 | Enemy roster index 0 (archive `Ms/00.p`), memory slot 0 of 6. | No identifying text recovered in the scanned string files. ([source data](../src/overlays/ov114/data/)) |
 | ov115 | 72.3% | 13 | Enemy roster index 1 (archive `Ms/01.p`), memory slot 0 of 6, one of 2 slot copies. | `body` ([source data](../src/overlays/ov115/data/)) |
 | ov116 | 72.3% | 13 | Enemy roster index 1 (archive `Ms/01.p`), memory slot 2 of 6, one of 2 slot copies. | `body` ([source data](../src/overlays/ov116/data/)) |
