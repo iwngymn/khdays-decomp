@@ -248,6 +248,10 @@ ABSOLUTE_SYMBOLS = {
     # Note only a numeric absolute works; `alias = base;` links as 0.
     "data_ov002_0207e9f4_default": 0x0207E9F4,
     "data_ov002_0207ef80_offsets": 0x0207EF80,
+    # Public base of ov107's initializer pool. Its first eight bytes are local
+    # templates in func_ov107_020c5cfc; 73a0 and 7da4 still address the following
+    # notification templates as offsets from this base.
+    "data_ov107_020cb628": 0x020CB628,
 }
 
 
