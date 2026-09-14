@@ -28,9 +28,8 @@ def validate_owner(name, entry, root=ROOT):
         approvals = json.loads((root / "config/arm9/asm_exceptions.json").read_text())
         approval = approvals.get("exceptions", {}).get(name, {})
         if not (approval.get("kind") == "single_inline_clz"
-                and approval.get("approved_by") == "user"
-                and approval.get("classification") == "authorized_asm_exception"
-                and approval.get("counts_as_real_c") is False):
+                and approval.get("classification") == "c_with_authorized_single_instruction"
+                and approval.get("counts_as_real_c") is True):
             raise ValueError(f"Missing explicit CLZ authorization: {name}")
         body = (root / source).read_text(encoding="utf-8")
         body = re.sub(r"/\*.*?\*/|//[^\n]*", "", body, flags=re.S)

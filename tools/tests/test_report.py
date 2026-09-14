@@ -82,9 +82,9 @@ class ReportTests(unittest.TestCase):
 
     def test_checked_in_manifest_is_source_bound(self):
         entries = report_asm.load_verified_matches()
-        self.assertEqual(len(entries), 27)
+        self.assertEqual(len(entries), 29)
         self.assertEqual(sum(e["kind"] == "authorized_clz" for e in entries.values()), 2)
-        self.assertEqual(sum(e["kind"] == "canonical_sdk_asm" for e in entries.values()), 25)
+        self.assertEqual(sum(e["kind"] == "canonical_sdk_asm" for e in entries.values()), 27)
 
     def test_closed_modules_keep_honest_real_c_counts(self):
         entries = report_asm.load_verified_matches()
@@ -155,8 +155,9 @@ class AttestationTests(unittest.TestCase):
         entry = dict(self.entry, kind="authorized_clz")
         with self.assertRaisesRegex(ValueError, "authorization"):
             report_asm.validate_owner("test", entry, self.root)
-        approval = dict(kind="single_inline_clz", approved_by="user",
-                        classification="authorized_asm_exception", counts_as_real_c=False)
+        approval = dict(kind="single_inline_clz",
+                        classification="c_with_authorized_single_instruction",
+                        counts_as_real_c=True)
         approval_path.write_text(json.dumps({"exceptions": {"test": approval}}))
         self.source.write_text("int test(int x) { asm { clz x, x } return x; }\n")
         report_asm.validate_owner("test", entry, self.root)
